@@ -190,7 +190,7 @@ public static class HeightTimeline
             if (s.RunTimeSec is double t && t > after) points.Add((t, s.Current));
         }
         unit ??= "";
-        return new HeightSeries(unit, unit == "" ? points : RemoveSpikes(points, Falls.Threshold(unit)));
+        return new HeightSeries(unit, unit == "" ? points : RemoveSpikes(points, Falls.SpikeThreshold(unit)));
     }
 
     /// <summary>

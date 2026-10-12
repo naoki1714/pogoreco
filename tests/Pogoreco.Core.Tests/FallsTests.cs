@@ -7,11 +7,11 @@ public class FallsTests
     [Fact]
     public void しきい値以上の下降だけを落下とし_小さな揺れは数えない()
     {
-        var falls = Falls.Detect(P(100, 110, 105, 108, 60, 40, 45, 50), "m");
+        var falls = Falls.Detect(P(300, 330, 315, 322, 180, 150, 160), "m");
         var f = Assert.Single(falls);
-        Assert.Equal(110, f.From);
-        Assert.Equal(40, f.To);
-        Assert.Equal(70, f.Distance);
+        Assert.Equal(330, f.From);
+        Assert.Equal(150, f.To);
+        Assert.Equal(180, f.Distance);
         Assert.False(f.Axe);
     }
 
@@ -41,7 +41,18 @@ public class FallsTests
     [Fact]
     public void 最後まで下降が続いても数える()
     {
-        Assert.Single(Falls.Detect(P(10, 80, 20), "m"));
+        Assert.Single(Falls.Detect(P(10, 150, 20), "m"));
+    }
+
+    [Fact]
+    public void 基準は_メートルなら100m以上_パーセントなら10パーセント以上()
+    {
+        Assert.Equal(100, Falls.Threshold("m"));
+        Assert.Equal(10, Falls.Threshold("%"));
+        Assert.Empty(Falls.Detect(P(500, 420, 410), "m"));      // 90 m は大幅ではない
+        Assert.Single(Falls.Detect(P(500, 400, 395), "m"));     // 105 m
+        Assert.Empty(Falls.Detect(P(50, 42, 41), "%"));         // 9%
+        Assert.Single(Falls.Detect(P(50, 40, 39), "%"));        // 11%
     }
 }
 

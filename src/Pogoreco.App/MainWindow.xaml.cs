@@ -1,5 +1,7 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using Pogoreco.App.Charts;
 using Pogoreco.App.Pages;
@@ -21,6 +23,8 @@ public partial class MainWindow : Window
     private readonly Navigator _nav;
     private string? _message;
     private string? _newVersion;
+    private readonly Canvas _refreshSpin;
+    private bool _refreshing;
 
     public MainWindow()
     {
@@ -29,6 +33,17 @@ public partial class MainWindow : Window
         var version = typeof(MainWindow).Assembly.GetName().Version;
         if (version is not null) Subtitle.Text += $"　v{version.Major}.{version.Minor}.{version.Build}";
         _nav = new Navigator(_data, Show);
+
+        // 上のボタン。更新は絵だけのボタンで、読み込み中は回り、終わると止まる
+        var refresh = Ui.IconButton("M19,12 A7,7 0 1 1 16.9,7.1 M17,3.5 L17,7.5 L13,7.5", "更新", () => _ = RefreshAsync(), out _refreshSpin);
+        var buttons = Ui.Row(
+            Ui.Button("ショートカットを作成", CreateShortcut),
+            refresh,
+            Ui.Button("記録つきで Pogostuck を起動", StartRecording, primary: true));
+        buttons.HorizontalAlignment = HorizontalAlignment.Right;
+        buttons.Margin = new Thickness(0, 0, 0, 12);
+        TopBar.Children.Add(buttons);
+
         foreach (var (title, build) in _menu)
         {
             var b = new Button { Content = title, Style = (Style)FindResource("NavButton") };
@@ -44,7 +59,7 @@ public partial class MainWindow : Window
         _timer.Tick += (_, _) =>
         {
             // 記録中・ゲーム中だけ読み直す（そうでなければデータは変わらない）
-            if (AppData.IsRecorderRunning() || _data.GameRunning) { Reload(); _nav.Refresh(); }
+            if (!_refreshing && (AppData.IsRecorderRunning() || _data.GameRunning)) { Reload(); _nav.Refresh(); }
         };
         _timer.Start();
     }
@@ -76,6 +91,25 @@ public partial class MainWindow : Window
         RenderStatus();
     }
 
+    /// <summary>更新ボタン: 読み直している間はアイコンを回し、終わったら止める（一瞬で終わっても動きが見えるよう、最低 0.7 秒は回す）。</summary>
+    private async Task RefreshAsync()
+    {
+        if (_refreshing) return;
+        _refreshing = true;
+        var angle = (RotateTransform)_refreshSpin.RenderTransform;
+        angle.BeginAnimation(RotateTransform.AngleProperty,
+            new DoubleAnimation(0, 360, TimeSpan.FromSeconds(0.8)) { RepeatBehavior = RepeatBehavior.Forever });
+        var minimum = Task.Delay(700);
+        try { await Task.Run(_data.Refresh); }
+        catch (Exception e) { _message = $"読み込みに失敗しました: {e.Message}"; }
+        await minimum;
+        RenderStatus();
+        _nav.Refresh();
+        angle.BeginAnimation(RotateTransform.AngleProperty, null);
+        angle.Angle = 0;
+        _refreshing = false;
+    }
+
     private void Show(string title, UIElement page, bool keepScroll)
     {
         foreach (Button b in Nav.Children)
@@ -94,20 +128,17 @@ public partial class MainWindow : Window
     private void RenderStatus()
     {
         StatusArea.Children.Clear();
-        var status = _data.RecorderRunning
-            ? Ui.Badge("記録中 — ゲームを閉じると記録係も終わります", Theme.Good)
+        // 記録中かどうかは、メニューの下に出す（幅が狭いので短い文言。説明はホバーで）
+        var (text, dot, tip) = _data.RecorderRunning
+            ? ("記録中", Theme.Good, "ゲームを閉じると記録係も終わります")
             : _data.GameRunning
-                ? Ui.Badge("Pogostuck は動いていますが、記録係は動いていません", Theme.Warning)
-                : Ui.Badge("Pogostuck は起動していません", Theme.Deemph);
-        var bar = new DockPanel { LastChildFill = false };
-        bar.Children.Add(status);
-        var buttons = Ui.Row(
-            Ui.Button("ショートカットを作成", CreateShortcut),
-            Ui.Button("更新", () => { Reload(); _nav.Refresh(); }),
-            Ui.Button("記録つきで Pogostuck を起動", StartRecording, primary: true));
-        DockPanel.SetDock(buttons, Dock.Right);
-        bar.Children.Add(buttons);
-        StatusArea.Children.Add(Ui.Card(bar));
+                ? ("記録していません", Theme.Warning, "Pogostuck は動いていますが、記録係は動いていません")
+                : ("ゲームは起動していません", Theme.Deemph, null);
+        var status = Ui.Badge(text, dot);
+        status.Background = Theme.Surface;
+        status.Padding = new Thickness(12, 6, 12, 6);
+        status.ToolTip = tip;
+        RecordingStatus.Child = status;
 
         if (_newVersion is not null)
         {

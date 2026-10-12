@@ -35,7 +35,7 @@ internal static class DashboardPage
             page.Children.Add(Ui.Row(
                 Ui.H2("現在のラン"),
                 Ui.Muted(Maps.MapName(currentMap)).WithMargin(new Thickness(8, 4, 0, 0)),
-                Ui.Button("ランで見る", () => nav.Push(n => RunsPage.Detail(n, current.Id), "ラン")).WithMargin(new Thickness(12, 0, 0, 0)))
+                Ui.ChevronButton("ランで見る", () => nav.Push(n => RunsPage.Detail(n, current.Id), "ラン")).WithMargin(new Thickness(12, 0, 0, 0)))
                 .WithMargin(new Thickness(0, 0, 0, 8)));
             page.Children.Add(RunsPage.ClimbCard(d, current, currentMap, colorMode, cm => nav.Replace(n => Build(n, cm))));
         }

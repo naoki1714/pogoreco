@@ -11,6 +11,9 @@
 
         <!-- 左のメニュー: 地と同じ色。上にロゴ（山と旗）と名前 -->
         <Border Grid.Column="0" Padding="14,26,6,20">
+            <DockPanel LastChildFill="True">
+            <!-- 記録中かどうかの表示（メニューの下） -->
+            <Border x:Name="RecordingStatus" DockPanel.Dock="Bottom" Margin="8,0,0,0" />
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="8,0,0,18">
                     <Viewbox Width="38" Height="38">
@@ -28,10 +31,12 @@
                 </StackPanel>
                 <StackPanel x:Name="Nav" />
             </StackPanel>
+            </DockPanel>
         </Border>
 
         <ScrollViewer x:Name="Scroller" Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Margin="16,24,28,48" MaxWidth="1200">
+                <StackPanel x:Name="TopBar" />
                 <StackPanel x:Name="StatusArea" />
                 <ContentControl x:Name="PageHost" />
             </StackPanel>

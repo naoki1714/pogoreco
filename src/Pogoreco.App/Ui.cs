@@ -112,6 +112,40 @@ internal static class Ui
         return b;
     }
 
+    /// <summary>
+    /// 絵だけの丸いボタン。pathData は 24×24 の枠の中に描いた線（太さ 2 の線で描かれる）。
+    /// spin に渡した Canvas を回すと、処理中の動きにできる。
+    /// </summary>
+    public static Button IconButton(string pathData, string tooltip, Action onClick, out Canvas spin)
+    {
+        spin = new Canvas { Width = 24, Height = 24, RenderTransformOrigin = new Point(0.5, 0.5), RenderTransform = new RotateTransform(0) };
+        spin.Children.Add(new System.Windows.Shapes.Path
+        {
+            Data = Geometry.Parse(pathData),
+            Stroke = Theme.TextPrimary,
+            StrokeThickness = 2,
+            StrokeStartLineCap = PenLineCap.Round,
+            StrokeEndLineCap = PenLineCap.Round,
+            StrokeLineJoin = PenLineJoin.Round,
+        });
+        var b = new Button
+        {
+            Content = new Viewbox { Width = 16, Height = 16, Child = spin },
+            Width = 32,
+            Height = 32,
+            Padding = new Thickness(0),
+            Margin = new Thickness(8, 0, 0, 0),
+            ToolTip = tooltip,
+        };
+        System.Windows.Automation.AutomationProperties.SetName(b, tooltip);
+        b.SetResourceReference(FrameworkElement.StyleProperty, "ActionButton");
+        b.Click += (_, _) => onClick();
+        return b;
+    }
+
+    /// <summary>「進む」を表す &gt; の丸いボタン。</summary>
+    public static Button ChevronButton(string tooltip, Action onClick) => IconButton("M9,5 L16,12 L9,19", tooltip, onClick, out _);
+
     public static TextBlock Link(string text, Action onClick)
     {
         var t = Text(text, 12, Theme.Link);

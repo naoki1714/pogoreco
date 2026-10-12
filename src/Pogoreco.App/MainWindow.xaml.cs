@@ -24,6 +24,7 @@ public partial class MainWindow : Window
     private string? _message;
     private string? _newVersion;
     private readonly Canvas _refreshSpin;
+    private readonly TextBlock _shortcutLink;
     private bool _refreshing;
 
     public MainWindow()
@@ -31,18 +32,23 @@ public partial class MainWindow : Window
         InitializeComponent();
         AppTitle.FontFamily = Theme.Display;
         var version = typeof(MainWindow).Assembly.GetName().Version;
-        if (version is not null) Subtitle.Text += $"　v{version.Major}.{version.Minor}.{version.Build}";
+        if (version is not null) Subtitle.Text = $"v{version.Major}.{version.Minor}.{version.Build}";
         _nav = new Navigator(_data, Show);
 
-        // 上のボタン。更新は絵だけのボタンで、読み込み中は回り、終わると止まる
+        // 上のボタンは起動だけ。更新（絵だけのボタン。読み込み中は回り、終わると止まる）とショートカットはサイドバーの下
+        var launch = Ui.Button("記録つきで Pogostuck を起動", StartRecording, primary: true);
+        launch.HorizontalAlignment = HorizontalAlignment.Right;
+        launch.Margin = new Thickness(0, 0, 0, 12);
+        TopBar.Children.Add(launch);
+
         var refresh = Ui.IconButton("M19,12 A7,7 0 1 1 16.9,7.1 M17,3.5 L17,7.5 L13,7.5", "更新", () => _ = RefreshAsync(), out _refreshSpin);
-        var buttons = Ui.Row(
-            Ui.Button("ショートカットを作成", CreateShortcut),
-            refresh,
-            Ui.Button("記録つきで Pogostuck を起動", StartRecording, primary: true));
-        buttons.HorizontalAlignment = HorizontalAlignment.Right;
-        buttons.Margin = new Thickness(0, 0, 0, 12);
-        TopBar.Children.Add(buttons);
+        refresh.Margin = new Thickness(0);
+        SideActions.Children.Add(refresh);
+        // ショートカットは普通は一度しか作らないので、まだ無いときだけ出す
+        _shortcutLink = Ui.Link("ショートカットを作成", CreateShortcut);
+        _shortcutLink.VerticalAlignment = VerticalAlignment.Center;
+        _shortcutLink.Margin = new Thickness(12, 0, 0, 0);
+        SideActions.Children.Add(_shortcutLink);
 
         foreach (var (title, build) in _menu)
         {
@@ -139,6 +145,7 @@ public partial class MainWindow : Window
         status.Padding = new Thickness(12, 6, 12, 6);
         status.ToolTip = tip;
         RecordingStatus.Child = status;
+        _shortcutLink.Visibility = AppData.ShortcutExists() ? Visibility.Collapsed : Visibility.Visible;
 
         if (_newVersion is not null)
         {

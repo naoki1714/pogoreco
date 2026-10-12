@@ -78,11 +78,17 @@ public sealed class AppData
         return true;
     }
 
+    private static string ShortcutPath() =>
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "Pogostuck（記録つき）.lnk");
+
+    /// <summary>デスクトップに「Pogostuck（記録つき）」のショートカットがすでにあるか。</summary>
+    public static bool ShortcutExists() => File.Exists(ShortcutPath());
+
     /// <summary>デスクトップに「Pogostuck（記録つき）」のショートカットを作る。</summary>
     public string? CreateShortcut()
     {
         if (RecorderPath() is not string recorder) return null;
-        var link = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "Pogostuck（記録つき）.lnk");
+        var link = ShortcutPath();
         var shellType = Type.GetTypeFromProgID("WScript.Shell") ?? throw new InvalidOperationException("ショートカットを作れません");
         dynamic shell = Activator.CreateInstance(shellType)!;
         dynamic shortcut = shell.CreateShortcut(link);

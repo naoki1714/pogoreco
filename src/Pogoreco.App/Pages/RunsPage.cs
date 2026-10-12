@@ -186,7 +186,7 @@ internal static class RunsPage
     /// ランのカード（タイル＋高さのグラフ）。onChangeColorMode を渡すと「単色／時間で色分け／高さで色分け」の
     /// 切り替えを出す（ダッシュボードの「現在のラン」など、簡潔に見せたい場面では渡さない）。
     /// </summary>
-    internal static UIElement ClimbCard(AppData d, Item item, int map, ChartColorMode colorMode = ChartColorMode.None, Action<ChartColorMode>? onChangeColorMode = null)
+    internal static UIElement ClimbCard(AppData d, Item item, int map, ChartColorMode colorMode = ChartColorMode.None, Action<ChartColorMode>? onChangeColorMode = null, bool compact = false)
     {
         var series = HeightTimeline.Build(item.Climb, item.Hud);
         var segments = HeightTimeline.FindSegments(item.Climb, d.Sessions);
@@ -285,6 +285,7 @@ internal static class RunsPage
                     [true, true, false, false]),
             above: Ui.Stack(tiles, notes).WithMargin(new Thickness(0, 0, 0, 12)));
 
+        if (compact) return card;
         var stack = Ui.Stack(card);
         if (areaNames.Count > 0 && series.Points.Count > 1)
         {

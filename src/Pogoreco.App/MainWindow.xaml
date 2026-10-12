@@ -13,7 +13,10 @@
         <Border Grid.Column="0" Padding="14,26,6,20">
             <DockPanel LastChildFill="True">
             <!-- 記録中かどうかの表示（メニューの下） -->
-            <Border x:Name="RecordingStatus" DockPanel.Dock="Bottom" Margin="8,0,0,0" />
+            <StackPanel DockPanel.Dock="Bottom" Margin="8,0,0,0">
+                <StackPanel x:Name="SideActions" Orientation="Horizontal" Margin="0,0,0,10" />
+                <Border x:Name="RecordingStatus" />
+            </StackPanel>
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="8,0,0,18">
                     <Viewbox Width="38" Height="38">
@@ -26,7 +29,7 @@
                     </Viewbox>
                     <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
                         <TextBlock x:Name="AppTitle" Text="pogoreco" FontSize="20" Foreground="{StaticResource TextPrimaryBrush}" />
-                        <TextBlock x:Name="Subtitle" Text="Pogostuck の記録帳" FontSize="11" Foreground="{StaticResource TextMutedBrush}" />
+                        <TextBlock x:Name="Subtitle" Text="" FontSize="11" Foreground="{StaticResource TextMutedBrush}" />
                     </StackPanel>
                 </StackPanel>
                 <StackPanel x:Name="Nav" />

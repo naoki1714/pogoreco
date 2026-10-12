@@ -19,6 +19,7 @@ public partial class MainWindow : Window
         ("ラン", n => RunsPage.Build(n)),
         ("セッション", n => SessionsPage.Build(n)),
         ("マップ", n => MapsPage.Build(n)),
+        ("使い方", n => HelpPage.Build(n)),
     ];
     private readonly Navigator _nav;
     private string? _message;

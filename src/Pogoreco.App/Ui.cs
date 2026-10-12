@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -60,25 +60,26 @@ internal static class Ui
 
     public static UIElement Tile(string label, string value, string? note = null) => Stack(
         Text(label, 13, Theme.TextSecondary),
-        Display(value, 24),
+        Display(value, 22),
         note is null ? null : Muted(note));
 
-    /// <summary>数字のタイルを横に並べる。1 つずつ淡い地色の丸いタイルに入れる。</summary>
-    public static UniformGrid Tiles(params UIElement[] tiles)
+    /// <summary>
+    /// 数字のタイルを並べる。1 つずつ淡い地色の丸いタイルに入れる。
+    /// 幅が足りなくなったら、1 行の数を減らして折り返す（文字が縦に割れないように）。
+    /// </summary>
+    public static Panel Tiles(params UIElement[] tiles)
     {
-        var grid = new UniformGrid { Columns = tiles.Length, Rows = 1, Margin = new Thickness(0, 12, 0, 0) };
+        var panel = new TilePanel { Margin = new Thickness(0, 12, 0, 0) };
         foreach (var t in tiles)
-            grid.Children.Add(new Border
+            panel.Children.Add(new Border
             {
                 Background = Theme.Tint,
                 CornerRadius = new CornerRadius(20),
-                Padding = new Thickness(18, 12, 18, 12),
-                Margin = new Thickness(0, 0, 10, 0),
+                Padding = new Thickness(16, 12, 16, 12),
                 Child = t,
             });
-        return grid;
+        return panel;
     }
-
     public static Border Notice(string text, bool warn = false) => new()
     {
         Background = Theme.Surface,
@@ -91,6 +92,16 @@ internal static class Ui
     };
 
     /// <summary>状態の表示。色だけに頼らず、点と文字を並べる。</summary>
+    /// <summary>山の絵などの上に置く、白っぽい小さなラベル。</summary>
+    public static Border Chip(string text) => new()
+    {
+        Background = Brushes.White,
+        CornerRadius = new CornerRadius(999),
+        Padding = new Thickness(10, 2, 10, 2),
+        VerticalAlignment = VerticalAlignment.Center,
+        Child = Text(text, 12, Theme.TextSecondary),
+    };
+
     public static Border Badge(string text, Brush dot) => new()
     {
         BorderBrush = Theme.Border,
@@ -221,5 +232,51 @@ internal static class Ui
     {
         element.Margin = margin;
         return element;
+    }
+}
+
+/// <summary>同じ幅のタイルを、1 行にいくつ入るかを幅から決めて並べるパネル。</summary>
+internal sealed class TilePanel : Panel
+{
+    private const double MinTileWidth = 140, Gap = 10;
+
+    private static int Columns(double width, int count)
+    {
+        int cols = Math.Clamp((int)((double.IsInfinity(width) ? 1e6 : width + Gap) / (MinTileWidth + Gap)), 1, Math.Max(1, count));
+        // 最後の行に 1 枚だけ残らないよう、割り切れる列数があればそれにする（4 枚なら 2×2）
+        if (cols < count && count % cols != 0)
+            for (int c = cols; c >= 2; c--)
+                if (count % c == 0) { cols = c; break; }
+        return cols;
+    }
+
+    protected override Size MeasureOverride(Size available)
+    {
+        int cols = Columns(available.Width, InternalChildren.Count);
+        double tileW = double.IsInfinity(available.Width) ? MinTileWidth : (available.Width - Gap * (cols - 1)) / cols;
+        double total = 0, rowH = 0;
+        for (int i = 0; i < InternalChildren.Count; i++)
+        {
+            InternalChildren[i].Measure(new Size(tileW, double.PositiveInfinity));
+            rowH = Math.Max(rowH, InternalChildren[i].DesiredSize.Height);
+            if (i % cols == cols - 1 || i == InternalChildren.Count - 1) { total += rowH + (total > 0 ? Gap : 0); rowH = 0; }
+        }
+        return new Size(double.IsInfinity(available.Width) ? tileW * cols + Gap * (cols - 1) : available.Width, total);
+    }
+
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        int cols = Columns(finalSize.Width, InternalChildren.Count);
+        double tileW = (finalSize.Width - Gap * (cols - 1)) / cols, y = 0;
+        for (int start = 0; start < InternalChildren.Count; start += cols)
+        {
+            double rowH = 0;
+            for (int j = start; j < Math.Min(start + cols, InternalChildren.Count); j++)
+                rowH = Math.Max(rowH, InternalChildren[j].DesiredSize.Height);
+            for (int j = start; j < Math.Min(start + cols, InternalChildren.Count); j++)
+                InternalChildren[j].Arrange(new Rect((j - start) * (tileW + Gap), y, tileW, rowH));
+            y += rowH + Gap;
+        }
+        return finalSize;
     }
 }

@@ -21,6 +21,8 @@ internal static class Theme
     public static readonly Brush CardEdge = Make("#D5E9DC");
     public static readonly Brush Border = Make("#1A23473A");
     public static readonly Brush Hover = Make("#14239A6F");
+    /// <summary>選んでいる行・メニュー。</summary>
+    public static readonly Brush Selected = Make("#DAEFE3");
     public static readonly Brush Series = Make("#3A9873");
     public static readonly Brush SeriesWash = Make("#1A3A9873");
     public static readonly Brush Deemph = Make("#8CA096");

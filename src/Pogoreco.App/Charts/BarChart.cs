@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -106,15 +106,20 @@ public sealed class BarChart : FrameworkElement
         else
         {
             var yLabels = ticks.Select(t => Theme.Text(this, ValueFormat(t), 12, Theme.TextMuted)).ToList();
-            double left = yLabels.Max(l => l.Width) + 10, bottom = 24, plotH = Math.Max(10, ActualHeight - bottom - 8);
+            double left = yLabels.Max(l => l.Width) + 10;
             double plotW = Math.Max(10, ActualWidth - left - 8), slot = plotW / Bars.Count, thick = Math.Min(24, slot * 0.7);
+            // ラベルが横に並びきらないときは、間引かずに斜めにして全部出す（LabelEvery を指定したときは従来どおり間引く）
+            var xLabels =Bars.Select(b => Theme.Text(this, b.Label, 12, Theme.TextMuted)).ToList();
+            double maxLabelW = xLabels.Max(l => l.Width);
+            bool tilt = LabelEvery == 0 && maxLabelW + 6 > slot;
+            double bottom = tilt ? maxLabelW * 0.65 + 24 : 24, plotH = Math.Max(10, ActualHeight - bottom - 8);
             for (int i = 0; i < ticks.Count; i++)
             {
                 double y = Math.Round(8 + plotH - ticks[i] / top * plotH) + 0.5;
                 dc.DrawLine(grid, new Point(left, y), new Point(left + plotW, y));
                 dc.DrawText(yLabels[i], new Point(left - 8 - yLabels[i].Width, y - yLabels[i].Height / 2));
             }
-            int every = LabelEvery > 0 ? LabelEvery : Math.Max(1, (int)Math.Ceiling(Bars.Count / Math.Max(1, plotW / 56)));
+            int every = tilt ? 1 : LabelEvery > 0 ? LabelEvery : Math.Max(1, (int)Math.Ceiling(Bars.Count / Math.Max(1, plotW / 56)));
             for (int i = 0; i < Bars.Count; i++)
             {
                 double cx = left + slot * i + slot / 2, h = Bars[i].Value / top * plotH;
@@ -122,8 +127,16 @@ public sealed class BarChart : FrameworkElement
                 if (h > 0) dc.DrawGeometry(Fill(i), null, RoundedEnd(rect, false));
                 if (i % every == 0 || i == Bars.Count - 1)
                 {
-                    var xl = Theme.Text(this, Bars[i].Label, 12, Theme.TextMuted);
-                    if (i % every == 0) dc.DrawText(xl, new Point(cx - xl.Width / 2, 8 + plotH + 4));
+                    var xl = xLabels[i];
+                    if (tilt)
+                    {
+                        // 右端を棒の下に合わせ、左下がりに 40° 傾ける
+                        var anchor = new Point(cx + 4, 8 + plotH + 6);
+                        dc.PushTransform(new RotateTransform(-40, anchor.X, anchor.Y));
+                        dc.DrawText(xl, new Point(anchor.X - xl.Width, anchor.Y));
+                        dc.Pop();
+                    }
+                    else if (i % every == 0) dc.DrawText(xl, new Point(cx - xl.Width / 2, 8 + plotH + 4));
                 }
                 _hit.Add(new Rect(left + slot * i, 0, slot, ActualHeight));
             }

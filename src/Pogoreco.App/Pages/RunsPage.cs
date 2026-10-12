@@ -1,5 +1,7 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using Pogoreco.App.Charts;
 using Pogoreco.Core;
 
@@ -87,8 +89,8 @@ internal static class RunsPage
     }
 
     /// <summary>
-    /// 一覧。マップを絞ったときは、そのマップを完走したかで見せ方を自動で切り替える:
-    /// 完走済み → ゴールタイム・自己ベストとの差、未完走 → 到達・経過時間。
+    /// ラン一覧。左に絞り込み・並べ替えとランの一覧、右に選んだラン（既定は一番新しいラン）の詳細
+    /// （高さのグラフ・落下の記録・エリアごとの累計滞在時間・エリア別の落下回数）。
     /// </summary>
     private static UIElement List(Navigator nav, int? map, RunSort sort, string? selectedId, ChartColorMode colorMode)
     {
@@ -100,37 +102,31 @@ internal static class RunsPage
         if (nav.CanGoBack) title.Children.Insert(0, Ui.Link("← 戻る", nav.Back).WithMargin(new Thickness(0, 8, 12, 0)));
         var page = Ui.Stack(title.WithMargin(new Thickness(0, 0, 0, 12)));
 
-        var filter = Ui.Row(Ui.Muted("マップ:").WithMargin(new Thickness(0, 7, 8, 0)));
-        filter.Children.Add(Ui.Button("すべて", () => nav.Replace(n => List(n, null, sort, null, colorMode)), primary: map is null));
-        foreach (var m in maps)
-            filter.Children.Add(Ui.Button(Maps.MapName(m), () => nav.Replace(n => List(n, m, sort, null, colorMode)), primary: m == map));
-        page.Children.Add(filter.WithMargin(new Thickness(0, 0, 0, 8)));
-
-        var sortRow = Ui.Row(Ui.Muted("並べ替え:").WithMargin(new Thickness(0, 7, 8, 0)));
-        foreach (var (v, label) in new[] { (RunSort.Recent, "新しい順"), (RunSort.Reach, "最高到達順"), (RunSort.Time, "ゴールタイム順") })
-            sortRow.Children.Add(Ui.Button(label, () => nav.Replace(n => List(n, map, v, selectedId, colorMode)), primary: v == sort));
-        page.Children.Add(sortRow.WithMargin(new Thickness(0, 0, 0, 16)));
-
         var items = all.Where(i => map is null || i.Map == map).ToList();
+
+        // 左: 絞り込みと並べ替え（折り返して並べる）
+        var left = Ui.Stack();
+        left.Children.Add(Ui.Muted("マップ").WithMargin(new Thickness(2, 0, 0, 4)));
+        var filter = new WrapPanel();
+        filter.Children.Add(Chip("すべて", map is null, () => nav.Replace(n => List(n, null, sort, null, colorMode))));
+        foreach (var m in maps)
+            filter.Children.Add(Chip(Maps.MapName(m), m == map, () => nav.Replace(n => List(n, m, sort, null, colorMode))));
+        left.Children.Add(filter.WithMargin(new Thickness(0, 0, 0, 8)));
+        left.Children.Add(Ui.Muted("並べ替え").WithMargin(new Thickness(2, 0, 0, 4)));
+        var sortRow = new WrapPanel();
+        foreach (var (v, label) in new[] { (RunSort.Recent, "新しい順"), (RunSort.Reach, "最高到達順"), (RunSort.Time, "ゴールタイム順") })
+            sortRow.Children.Add(Chip(label, v == sort, () => nav.Replace(n => List(n, map, v, selectedId, colorMode))));
+        left.Children.Add(sortRow.WithMargin(new Thickness(0, 0, 0, 12)));
+
         if (items.Count == 0)
         {
-            page.Children.Add(Ui.Card(Ui.Stack(
-                Ui.Text("まだ高さの記録がありません。", 14, Theme.TextSecondary),
-                Ui.Text("デスクトップの「Pogostuck（記録つき）」から遊ぶと、画面の高さを 1 秒ごとに記録します。", 14, Theme.TextSecondary))));
+            left.Children.Add(Ui.Card(Ui.Text("まだ高さの記録がありません。", 14, Theme.TextSecondary)));
+            page.Children.Add(left);
+            page.Children.Add(Ui.Card(Ui.Text("デスクトップの「Pogostuck（記録つき）」から遊ぶと、画面の高さを 1 秒ごとに記録します。", 14, Theme.TextSecondary)));
             return page;
         }
 
-        // 一番上には、選んだラン（なければ一番新しいラン）の詳細を出す
         var selected = items.FirstOrDefault(i => i.Id == selectedId) ?? items[0];
-        if (selected.Map is int selMap)
-        {
-            var head = Ui.Row(Ui.H2("ランの詳細"), Ui.Muted($"{Maps.MapName(selMap)}　{Fmt.DateTime(selected.LastActivity)}").WithMargin(new Thickness(8, 4, 0, 0)));
-            if (FindSession(d, selected) is { } session)
-                head.Children.Add(Ui.Link("このセッションを見る", () => nav.Push(n => SessionsPage.Detail(n, session.Id), "セッション")).WithMargin(new Thickness(12, 5, 0, 0)));
-            page.Children.Add(head.WithMargin(new Thickness(0, 0, 0, 8)));
-            page.Children.Add(ClimbCard(d, selected, selMap, colorMode, cm => nav.Replace(n => List(n, map, sort, selected.Id, cm))));
-        }
-
         items = sort switch
         {
             RunSort.Reach => [.. items.OrderByDescending(ReachValue)],
@@ -140,46 +136,71 @@ internal static class RunsPage
         // 自己ベスト = そのマップで記録の残っているゴールタイムの最速
         double? Best(int? m) => all.Where(i => i.Map == m && i.Climb is { Status: ClimbStatus.Finished, FinishTimeSec: not null })
             .Select(i => i.Climb!.FinishTimeSec).Min();
-        string Diff(Item i) => i.Climb?.FinishTimeSec is double t && Best(i.Map) is double b ? (t - b < 0.0005 ? "ベスト" : "+" + Fmt.RunTime(t - b)) : "";
+        string Diff(Item i) => i.Climb?.FinishTimeSec is double t && Best(i.Map) is double b ? (t - b < 0.0005 ? "ベスト" : "自己ベスト +" + Fmt.RunTime(t - b)) : "";
 
-        bool timeView = map is int mm && Best(mm) is not null;
-        string[] headers;
-        bool[] numeric;
-        Func<Item, string[]> cells;
-        if (map is null)
+        var list = Ui.Stack();
+        foreach (var i in items)
         {
-            headers = ["マップ", "状態", "最後の記録", "ラン時間", "最高到達", "ゴールタイム"];
-            numeric = [false, false, false, true, true, true];
-            cells = i => [i.Map is int m ? Maps.MapName(m) : "—", i.StatusText, Fmt.DateTime(i.LastActivity), Fmt.Elapsed(ElapsedOf(i)), ReachText(i), Fmt.RunTime(i.Climb?.FinishTimeSec)];
+            var head = Fmt.DateTime(i.LastActivity) + (map is null && i.Map is int m ? $" ・ {Maps.MapName(m)}" : "");
+            var parts = new List<string> { i.StatusText, $"最高 {ReachText(i)}" };
+            if (i.Climb?.FinishTimeSec is double t) parts.Add($"ゴール {Fmt.RunTime(t)}"); else parts.Add(Fmt.Elapsed(ElapsedOf(i)));
+            if (Diff(i) is { Length: > 0 } diff) parts.Add(diff);
+            var id = i.Id;
+            list.Children.Add(RunRow(head, string.Join(" ・ ", parts), id == selected.Id, () => nav.Replace(n => List(n, map, sort, id, colorMode))));
         }
-        else if (timeView)
+        left.Children.Add(Ui.Card(list));
+
+        // 右: 選んだランの詳細
+        var right = Ui.Stack();
+        if (selected.Map is int selMap)
         {
-            headers = ["状態", "最後の記録", "ゴールタイム", "自己ベストとの差", "ラン時間", "最高到達"];
-            numeric = [false, false, true, true, true, true];
-            cells = i => [i.StatusText, Fmt.DateTime(i.LastActivity), Fmt.RunTime(i.Climb?.FinishTimeSec), Diff(i), Fmt.Elapsed(ElapsedOf(i)), ReachText(i)];
-        }
-        else
-        {
-            headers = ["状態", "最後の記録", "最高到達", "前のランとの差", "ラン時間", "備考"];
-            numeric = [false, false, true, true, true, false];
-            cells = i => [i.StatusText, Fmt.DateTime(i.LastActivity), ReachText(i), PreviousDelta(d, i)?.Replace("前のランより ", "") ?? "", Fmt.Elapsed(ElapsedOf(i)), i.Hud.Count > 0 ? "画面の記録あり" : ""];
+            var head = Ui.Row(Ui.H2("ランの詳細"), Ui.Muted($"{Maps.MapName(selMap)}　{Fmt.DateTime(selected.LastActivity)}").WithMargin(new Thickness(8, 4, 0, 0)));
+            if (FindSession(d, selected) is { } session)
+                head.Children.Add(Ui.Link("このセッションを見る", () => nav.Push(n => SessionsPage.Detail(n, session.Id), "セッション")).WithMargin(new Thickness(12, 5, 0, 0)));
+            right.Children.Add(head.WithMargin(new Thickness(0, 0, 0, 8)));
+            right.Children.Add(ClimbCard(d, selected, selMap, colorMode, cm => nav.Replace(n => List(n, map, sort, selected.Id, cm))));
         }
 
-        if (map is not null)
-            page.Children.Add(Ui.Muted(timeView
-                ? "ゴールしたマップのため、ゴールタイムと自己ベストとの差を表示しています。"
-                : "まだゴールしていないマップのため、到達と経過時間を表示しています。").WithMargin(new Thickness(0, 0, 0, 8)));
-        var rows = items.Select(i =>
-        {
-            var row = cells(i);
-            if (i.Id == selected.Id) row[0] = "▶ " + row[0];
-            return (row, Ui.Click(() => nav.Replace(n => List(n, map, sort, i.Id, colorMode))));
-        });
-        page.Children.Add(Ui.Card(Ui.Stack(
-            Ui.H2("ランの一覧").WithMargin(new Thickness(0, 0, 0, 8)),
-            Ui.Table(headers, rows, numeric))));
-        if (map is int sm && SessionReachCard(d, sm) is { } sessionCard) page.Children.Add(sessionCard);
+        var grid = new Grid();
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(340) });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(16) });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star), MinWidth = 300 });
+        Grid.SetColumn(left, 0);
+        Grid.SetColumn(right, 2);
+        grid.Children.Add(left);
+        grid.Children.Add(right);
+        page.Children.Add(grid);
         return page;
+    }
+
+    /// <summary>絞り込み・並べ替えの小さなボタン（選択中は色がつく）。</summary>
+    private static Button Chip(string text, bool on, Action onClick)
+    {
+        var b = Ui.Button(text, onClick, primary: on);
+        b.Margin = new Thickness(0, 0, 6, 6);
+        b.Padding = new Thickness(12, 4, 12, 4);
+        return b;
+    }
+
+    /// <summary>ラン一覧の 1 行（2 行の文字）。選んでいる行は色がつく。</summary>
+    private static UIElement RunRow(string head, string detail, bool selected, Action onClick)
+    {
+        var row = new Border
+        {
+            Background = selected ? Theme.Selected : Brushes.Transparent,
+            CornerRadius = new CornerRadius(14),
+            Padding = new Thickness(12, 8, 12, 8),
+            Margin = new Thickness(0, 1, 0, 1),
+            Cursor = Cursors.Hand,
+            Child = Ui.Stack(Ui.Text(head, 13, bold: selected), Ui.Muted(detail)),
+        };
+        if (!selected)
+        {
+            row.MouseEnter += (_, _) => row.Background = Theme.Hover;
+            row.MouseLeave += (_, _) => row.Background = Brushes.Transparent;
+        }
+        row.MouseLeftButtonUp += (_, _) => onClick();
+        return row;
     }
 
     /// <summary>
@@ -289,30 +310,9 @@ internal static class RunsPage
         var stack = Ui.Stack(card);
         if (areaNames.Count > 0 && series.Points.Count > 1)
         {
-            // 点と点の間の時間を、手前の点の高さのエリアに足す（落ちて戻った分も累計する）
-            var spent = new double[areaNames.Count + 1];
-            for (int i = 1; i < series.Points.Count; i++)
-            {
-                var (x0, y0) = series.Points[i - 1];
-                var dt = series.Points[i].X - x0;
-                if (dt <= 0 || double.IsNaN(y0)) continue;
-                spent[areaNames.Count(a => a.Value <= y0)] += dt;
-            }
-            var total = spent.Sum();
-            // 下から（スタート側）順に並べ、横棒グラフでは上がゴール側になるよう逆順で描く
-            var rowsArea = Enumerable.Range(0, spent.Length)
-                .Select(k => (Name: k == 0 ? "スタート地点" : areaNames[k - 1].Name, Sec: spent[k])).Reverse().ToList();
-            stack.Children.Add(Ui.ChartCard("エリアごとの累計滞在時間", "ラン中にそのエリアにいた時間の合計（落ちて戻った分も足します）",
-                new BarChart
-                {
-                    Horizontal = true,
-                    Bars = [.. rowsArea.Select(r => new Bar(r.Name, r.Sec, true, $"{r.Name}　{Fmt.Elapsed(r.Sec)}（{(total > 0 ? r.Sec / total : 0):P0}）"))],
-                    ValueFormat = Fmt.Elapsed,
-                    ValueName = "滞在時間",
-                },
-                () => Ui.Table(["エリア", "累計滞在時間", "割合"],
-                    rowsArea.Select(r => (new[] { r.Name, Fmt.Elapsed(r.Sec), total > 0 ? (r.Sec / total).ToString("P0") : "—" }, (Action?)null)),
-                    [false, true, true])));
+            // 縦向きの棒グラフ（左がスタート側）
+            stack.Children.Add(AreaCharts.Dwell(AreaStats.FromSeries(series, areaNames), "エリアごとの累計滞在時間",
+                "ラン中にそのエリアにいた時間の合計（落ちて戻った分も足します）"));
         }
         var fallCard = FallCard(series, areaNames);
         if (fallCard is not null) stack.Children.Add(fallCard);
@@ -323,7 +323,7 @@ internal static class RunsPage
         series.Points.Where(p => !double.IsNaN(p.Y)).OrderBy(p => Math.Abs(p.X - runTime)).FirstOrDefault().Y;
 
     /// <summary>区間の記録のある同じマップの全ランから、区間ごとの境界の高さ（通過時の高さの中央値）を求める。</summary>
-    private static List<(double Value, string Name)> LearnedAreas(AppData d, int map, string unit)
+    internal static List<(double Value, string Name)> LearnedAreas(AppData d, int map, string unit)
     {
         var heights = new Dictionary<int, List<double>>();
         foreach (var it in Items(d).Where(i => i.Map == map && i.Climb is not null))
@@ -390,72 +390,8 @@ internal static class RunsPage
         if (areaNames.Count == 0) return card;
 
         // 落ち始めた高さのエリアごとに数える（スタート地点 → 最初の区間の手前）
-        var byArea = new int[areaNames.Count + 1];
-        var axeByArea = new int[areaNames.Count + 1];
-        foreach (var f in falls)
-        {
-            var k = areaNames.Count(a => a.Value <= f.From);
-            byArea[k]++;
-            if (f.Axe) axeByArea[k]++;
-        }
-        var rowsArea = Enumerable.Range(0, byArea.Length)
-            .Select(k => (Name: k == 0 ? "スタート地点" : areaNames[k - 1].Name, Count: byArea[k], Axe: axeByArea[k])).Reverse().ToList();
-        var chart = new BarChart
-        {
-            Horizontal = true,
-            Bars = [.. rowsArea.Select(r => new Bar(r.Name, r.Count, true, $"{r.Name}　{r.Count}回" + (r.Axe > 0 ? $"（うち斧 {r.Axe}回）" : "")))],
-            ValueFormat = v => $"{v:0}回",
-            ValueName = "落下の回数",
-        };
-        var areaCard = Ui.ChartCard("エリア別の落下回数", $"{thr} 以上落ちた回数。落ち始めた高さのエリアで数えます", chart,
-            () => Ui.Table(["エリア", "落下の回数", "うち斧"],
-                rowsArea.Select(r => (new[] { r.Name, r.Count.ToString(), r.Axe > 0 ? r.Axe.ToString() : "" }, (Action?)null)),
-                [false, true, true]));
+        var areaCard = AreaCharts.Falls(AreaStats.FromSeries(series, areaNames), "エリア別の落下回数",
+            $"{thr} 以上落ちた回数。落ち始めた高さのエリアで数えます");
         return Ui.Stack(card, areaCard);
-    }
-
-    /// <summary>セッションごとの最高到達の推移（そのセッション中に画面で読んだ一番高い高さ。画面の記録が無い古いランは、ゲームの軌跡の最高値）。</summary>
-    private static UIElement? SessionReachCard(AppData d, int map)
-    {
-        var items = Items(d).Where(i => i.Map == map).ToList();
-        string? unit = null;
-        var points = new List<(SessionRecord Session, double Value)>();
-        foreach (var session in d.Sessions.OrderBy(x => x.StartedAt))
-        {
-            double? best = null;
-            void Take(double v, string u)
-            {
-                if (unit is not null && unit != u) return;
-                unit = u;
-                best = Math.Max(best ?? double.NegativeInfinity, v);
-            }
-            foreach (var smp in items.SelectMany(i => i.Hud).SelectMany(r => r.Samples).Where(x => x.At >= session.StartedAt && x.At <= session.EndedAt + 60_000))
-                Take(smp.Current, smp.Unit);
-            foreach (var it in items.Where(i => i.Hud.Count == 0 && i.Climb is not null && FindSession(d, i)?.Id == session.Id))
-            {
-                var disp = Maps.ToDisplay(it.Map, it.Climb!.MaxY);
-                if (disp.Unit != "") Take(disp.Value, disp.Unit);
-            }
-            if (best is double b) points.Add((session, b));
-        }
-        if (points.Count == 0 || unit is null) return null;
-        var u = unit;
-        var shown = points.TakeLast(30).ToList();
-        string Delta(int i) => i == 0 ? "" : (shown[i].Value - shown[i - 1].Value) switch
-        {
-            var x when Math.Abs(x) < 0.05 => "±0",
-            var x => (x > 0 ? "+" : "−") + Shared.Height(Math.Abs(x), u),
-        };
-        var chart = new BarChart
-        {
-            Bars = [.. shown.Select((p, i) => new Bar(Fmt.DateTime(p.Session.StartedAt)[..5], p.Value, true, $"{Fmt.DateTime(p.Session.StartedAt)}　{Shared.Height(p.Value, u)}"))],
-            ValueFormat = v => Shared.Height(v, u),
-            ValueName = "最高到達",
-            Height = 240,
-        };
-        return Ui.ChartCard("セッションごとの最高到達", "そのセッションで到達した一番高い高さ（直近 30 セッション）", chart,
-            () => Ui.Table(["セッション開始", "最高到達", "前のセッションとの差"],
-                shown.Select((p, i) => (new[] { Fmt.DateTime(p.Session.StartedAt), Shared.Height(p.Value, u), Delta(i) }, (Action?)null)),
-                [false, true, true]));
     }
 }

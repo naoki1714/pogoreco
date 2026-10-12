@@ -40,7 +40,7 @@ internal static class RunsPage
     private static double ReachValue(Item i) =>
         i.HudBest ?? (i.Climb is { } c ? Maps.ToDisplay(c.Map, c.MaxY).Value : double.NegativeInfinity);
 
-    private static string ReachText(Item i) =>
+    internal static string ReachText(Item i) =>
         i.HudBest is double hb ? Shared.Height(hb, i.Hud[0].Unit) : i.Climb is { } c ? Maps.ToDisplay(c.Map, c.MaxY).ToString() : "—";
 
     private static double ElapsedOf(Item i) =>

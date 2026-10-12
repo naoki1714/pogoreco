@@ -31,6 +31,7 @@ internal static class DashboardPage
         // 一番見たいのは現在のラン（経過時間と高さの推移）なので、他の数字より先に出す
         if (RunsPage.Items(d).FirstOrDefault() is { } current && current.Map is int currentMap)
         {
+            page.Children.Add(MountainArt.Hero("現在のランの最高到達", RunsPage.ReachText(current), $"{Maps.MapName(currentMap)} ・ {current.StatusText}"));
             page.Children.Add(Ui.Row(
                 Ui.H2("現在のラン"),
                 Ui.Muted(Maps.MapName(currentMap)).WithMargin(new Thickness(8, 4, 0, 0)),

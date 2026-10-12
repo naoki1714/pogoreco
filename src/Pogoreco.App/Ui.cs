@@ -20,8 +20,16 @@ internal static class Ui
         TextWrapping = TextWrapping.Wrap,
     };
 
-    public static TextBlock H1(string text) => Text(text, 22, bold: true);
-    public static TextBlock H2(string text) => Text(text, 16, bold: true);
+    /// <summary>見出しと大きな数字は丸いフォント（Kiwi Maru。1 太さだけなので太字にしない）。</summary>
+    public static TextBlock Display(string text, double size, Brush? brush = null, Thickness? margin = null)
+    {
+        var t = Text(text, size, brush, margin: margin);
+        t.FontFamily = Theme.Display;
+        return t;
+    }
+
+    public static TextBlock H1(string text) => Display(text, 26);
+    public static TextBlock H2(string text) => Display(text, 18);
     public static TextBlock Muted(string text, double size = 12) => Text(text, size, Theme.TextMuted);
 
     public static StackPanel Stack(params UIElement?[] children) => Panel(new StackPanel(), children);
@@ -36,10 +44,11 @@ internal static class Ui
     public static Border Card(UIElement content) => new()
     {
         Background = Theme.Surface,
-        BorderBrush = Theme.Border,
-        BorderThickness = new Thickness(1),
-        CornerRadius = new CornerRadius(10),
-        Padding = new Thickness(18, 16, 18, 16),
+        // 枠線は無し。下だけ太い線にして、ぷくっとした影のかわりにする
+        BorderBrush = Theme.CardEdge,
+        BorderThickness = new Thickness(0, 0, 0, 3),
+        CornerRadius = new CornerRadius(24),
+        Padding = new Thickness(22, 18, 22, 18),
         Margin = new Thickness(0, 0, 0, 16),
         Child = content,
     };
@@ -47,17 +56,26 @@ internal static class Ui
     /// <summary>そのビューで一番大事な数字（1 画面に 1 つ）。</summary>
     public static UIElement Hero(string label, string value) => Stack(
         Text(label, 14, Theme.TextSecondary),
-        Text(value, 48, bold: true));
+        Display(value, 48));
 
     public static UIElement Tile(string label, string value, string? note = null) => Stack(
         Text(label, 13, Theme.TextSecondary),
-        Text(value, 24, bold: true),
+        Display(value, 24),
         note is null ? null : Muted(note));
 
+    /// <summary>数字のタイルを横に並べる。1 つずつ淡い地色の丸いタイルに入れる。</summary>
     public static UniformGrid Tiles(params UIElement[] tiles)
     {
-        var grid = new UniformGrid { Columns = tiles.Length, Rows = 1, Margin = new Thickness(0, 8, 0, 0) };
-        foreach (var t in tiles) grid.Children.Add(t);
+        var grid = new UniformGrid { Columns = tiles.Length, Rows = 1, Margin = new Thickness(0, 12, 0, 0) };
+        foreach (var t in tiles)
+            grid.Children.Add(new Border
+            {
+                Background = Theme.Tint,
+                CornerRadius = new CornerRadius(20),
+                Padding = new Thickness(18, 12, 18, 12),
+                Margin = new Thickness(0, 0, 10, 0),
+                Child = t,
+            });
         return grid;
     }
 
@@ -66,7 +84,7 @@ internal static class Ui
         Background = Theme.Surface,
         BorderBrush = warn ? Theme.Warning : Theme.Border,
         BorderThickness = warn ? new Thickness(4, 1, 1, 1) : new Thickness(1),
-        CornerRadius = new CornerRadius(8),
+        CornerRadius = new CornerRadius(16),
         Padding = new Thickness(14, 10, 14, 10),
         Margin = new Thickness(0, 0, 0, 12),
         Child = Text(text, 13),

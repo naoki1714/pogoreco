@@ -3,18 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <!-- 色は dataviz スキルの基準パレット（ライト）に合わせている -->
-        <SolidColorBrush x:Key="PageBrush" Color="#F9F9F7" />
-        <SolidColorBrush x:Key="SurfaceBrush" Color="#FCFCFB" />
-        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#0B0B0B" />
-        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#52514E" />
-        <SolidColorBrush x:Key="TextMutedBrush" Color="#898781" />
-        <SolidColorBrush x:Key="GridBrush" Color="#E1E0D9" />
-        <SolidColorBrush x:Key="BorderBrush" Color="#1A0B0B0B" />
-        <SolidColorBrush x:Key="HoverBrush" Color="#0A0B0B0B" />
-        <SolidColorBrush x:Key="SeriesBrush" Color="#2A78D6" />
-        <SolidColorBrush x:Key="NavActiveBrush" Color="#1A2A78D6" />
-        <SolidColorBrush x:Key="LinkBrush" Color="#256ABF" />
+        <!-- 色は「やさしい緑」。Charts/Theme.cs と同じ値 -->
+        <SolidColorBrush x:Key="PageBrush" Color="#F3F9F4" />
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#23473A" />
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#486155" />
+        <SolidColorBrush x:Key="TextMutedBrush" Color="#5E766A" />
+        <SolidColorBrush x:Key="GridBrush" Color="#E1EFE6" />
+        <SolidColorBrush x:Key="BorderBrush" Color="#1A23473A" />
+        <SolidColorBrush x:Key="HoverBrush" Color="#14239A6F" />
+        <SolidColorBrush x:Key="SeriesBrush" Color="#3A9873" />
+        <SolidColorBrush x:Key="NavActiveBrush" Color="#FFDAEFE3" />
+        <SolidColorBrush x:Key="LinkBrush" Color="#1F7A58" />
+        <SolidColorBrush x:Key="AccentBrush" Color="#C4506B" />
         <SolidColorBrush x:Key="WarningBrush" Color="#FAB219" />
 
         <Style TargetType="Window">
@@ -26,14 +27,14 @@
             <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="HorizontalContentAlignment" Value="Left" />
-            <Setter Property="Padding" Value="10,7" />
+            <Setter Property="Padding" Value="14,10" />
             <Setter Property="Margin" Value="0,1" />
             <Setter Property="FontSize" Value="14" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="Bg" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                        <Border x:Name="Bg" Background="{TemplateBinding Background}" CornerRadius="16" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
                         </Border>
                         <ControlTemplate.Triggers>
@@ -51,14 +52,14 @@
             <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Padding" Value="14,6" />
+            <Setter Property="Padding" Value="16,7" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="Bg" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="16" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
@@ -75,8 +76,8 @@
         </Style>
 
         <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource ActionButton}">
-            <Setter Property="Background" Value="{StaticResource SeriesBrush}" />
-            <Setter Property="BorderBrush" Value="{StaticResource SeriesBrush}" />
+            <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
             <Setter Property="Foreground" Value="White" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>

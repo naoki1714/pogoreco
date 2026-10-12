@@ -25,6 +25,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        AppTitle.FontFamily = Theme.Display;
         var version = typeof(MainWindow).Assembly.GetName().Version;
         if (version is not null) Subtitle.Text += $"　v{version.Major}.{version.Minor}.{version.Build}";
         _nav = new Navigator(_data, Show);

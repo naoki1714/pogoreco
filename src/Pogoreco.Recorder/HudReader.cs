@@ -9,7 +9,8 @@ using Windows.Media.Ocr;
 
 namespace Pogoreco.Recorder;
 
-internal readonly record struct HudReading(HudHeights? Heights, double? RunTimeSec);
+/// <param name="Captured">画面を取得できたか（false は取得の失敗。HUD が出ていないだけのときは true で Heights が null）</param>
+internal readonly record struct HudReading(HudHeights? Heights, double? RunTimeSec, bool Captured = true);
 
 /// <summary>
 /// ゲームのウィンドウを Windows Graphics Capture で取得し、左上の HUD を Windows OCR で読む。
@@ -30,9 +31,18 @@ internal sealed class HudReader : IDisposable
     private SizeInt32 _size;
     private TaskCompletionSource<SoftwareBitmap?>? _waiting;
     private byte[] _frame = [];
+    private bool _hasFrame;
+    private long _lastFrameAt = Environment.TickCount64;
+
+    /// <summary>取得しているウィンドウ。ゲームがウィンドウを作り直したら取得し直す。</summary>
+    public IntPtr Hwnd { get; }
+
+    /// <summary>最後に新しい画面を受け取ってからの秒数（画面が動かないとき・取得が止まったときに大きくなる）。</summary>
+    public double SecondsSinceFrame => (Environment.TickCount64 - Interlocked.Read(ref _lastFrameAt)) / 1000.0;
 
     public HudReader(IntPtr hwnd)
     {
+        Hwnd = hwnd;
         _device = Native.CreateDevice();
         var item = Native.CreateItemForWindow(hwnd);
         _size = item.Size;
@@ -57,10 +67,12 @@ internal sealed class HudReader : IDisposable
 
     private async void OnFrameArrived(Direct3D11CaptureFramePool pool, object _)
     {
-        var frame = pool.TryGetNextFrame();
-        if (frame is null) return;
+        // async void なので、ここで例外を出すと記録係ごと落ちる。すべて受け止める
         try
         {
+            using var frame = pool.TryGetNextFrame();
+            if (frame is null) return;
+            Interlocked.Exchange(ref _lastFrameAt, Environment.TickCount64);
             if (frame.ContentSize.Width != _size.Width || frame.ContentSize.Height != _size.Height)
             {
                 // ウィンドウの大きさが変わった
@@ -74,9 +86,9 @@ internal sealed class HudReader : IDisposable
             try { waiting.TrySetResult(await SoftwareBitmap.CreateCopyFromSurfaceAsync(frame.Surface, BitmapAlphaMode.Premultiplied)); }
             catch (Exception) { waiting.TrySetResult(null); }
         }
-        finally
+        catch (Exception)
         {
-            frame.Dispose();
+            lock (_lock) { _waiting?.TrySetResult(null); _waiting = null; }
         }
     }
 
@@ -85,14 +97,27 @@ internal sealed class HudReader : IDisposable
     {
         var tcs = new TaskCompletionSource<SoftwareBitmap?>(TaskCreationOptions.RunContinuationsAsynchronously);
         lock (_lock) _waiting = tcs;
-        var done = await Task.WhenAny(tcs.Task, Task.Delay(2000));
-        if (done != tcs.Task) { lock (_lock) _waiting = null; return default; }
-        using var bitmap = await tcs.Task;
-        if (bitmap is null) return default;
-
-        int width = bitmap.PixelWidth, height = bitmap.PixelHeight;
-        if (_frame.Length != width * height * 4) _frame = new byte[width * height * 4];
-        bitmap.CopyToBuffer(_frame.AsBuffer());
+        var done = await Task.WhenAny(tcs.Task, Task.Delay(1500));
+        int width, height;
+        if (done == tcs.Task)
+        {
+            using var bitmap = await tcs.Task;
+            if (bitmap is null) return new HudReading(null, null, Captured: false);
+            width = bitmap.PixelWidth;
+            height = bitmap.PixelHeight;
+            if (_frame.Length != width * height * 4) _frame = new byte[width * height * 4];
+            bitmap.CopyToBuffer(_frame.AsBuffer());
+            _hasFrame = true;
+        }
+        else
+        {
+            // 画面が動かないと新しい画面は来ない（ポーズ中など）。直前の画面をそのまま読む
+            lock (_lock) _waiting = null;
+            if (!_hasFrame) return new HudReading(null, null, Captured: false);
+            width = _size.Width;
+            height = _size.Height;
+            if (_frame.Length != width * height * 4) return new HudReading(null, null, Captured: false);
+        }
 
         int cw = (int)(width * RegionWidth), ch = (int)(height * RegionHeight);
         var heights = await ReadOwnLineAsync(width, cw, ch, debugDir);

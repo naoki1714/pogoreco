@@ -85,9 +85,10 @@ internal static class Program
                 }
                 if (remoteDir is not null) climbs.Scan(remoteDir, now);
             }
-            catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+            catch (Exception e)
             {
-                log.Write($"取り込みに失敗（次回やり直す）: {e.Message}");
+                // ログ・セーブが書き込み中で読めない、形式が想定外など。記録係は止めず、次の回にやり直す
+                log.Write($"取り込みに失敗（次回やり直す）: {e.GetType().Name}: {e.Message}");
             }
         }
 
@@ -96,48 +97,94 @@ internal static class Program
         void Flush()
         {
             if (pending.Count == 0) return;
-            store.AppendHudSamples(sessionId ?? hudKey, pending);
-            pending.Clear();
+            try
+            {
+                store.AppendHudSamples(sessionId ?? hudKey, pending);
+                pending.Clear();
+            }
+            catch (Exception e)
+            {
+                // 書けなかった分は残して、次の回にもう一度書く
+                log.Write($"高さの書き込みに失敗（次回やり直す）: {e.GetType().Name}: {e.Message}");
+            }
         }
 
-        using var hud = new HudReader(game.MainWindowHandle);
+        HudReader? hud = null;
+        var sinceOpen = Stopwatch.StartNew();
         var started = Stopwatch.StartNew();
         var sinceFlush = Stopwatch.StartNew();
         var sinceImport = Stopwatch.StartNew();
-        int reads = 0, readable = 0;
+        int reads = 0, readable = 0, captureFailures = 0, errors = 0, reopened = 0, failStreak = 0;
         while (!game.HasExited && (limit is null || started.Elapsed.TotalSeconds < limit))
         {
             var tick = Stopwatch.StartNew();
-            if (!Native.IsIconic(game.MainWindowHandle))
+            try
             {
-                var reading = await hud.ReadAsync(reads == 0 ? debugDir : null);
-                reads++;
-                if (reading.Heights is HudHeights h)
+                game.Refresh();
+                var hwnd = game.MainWindowHandle;
+                if (hwnd != IntPtr.Zero && !Native.IsIconic(hwnd))
                 {
-                    readable++;
-                    pending.Add(new HudSample
+                    // 取得が無い・ウィンドウが変わった・新しい画面が 1 分来ない・取得に失敗し続けているときは、取得をやり直す
+                    // （開き直しは 5 秒以上あける）
+                    var needOpen = hud is null || hud.Hwnd != hwnd || hud.SecondsSinceFrame > 60 || failStreak >= 5;
+                    if (needOpen && (hud is null || sinceOpen.Elapsed > TimeSpan.FromSeconds(5)))
                     {
-                        At = DateTimeOffset.Now.ToUnixTimeMilliseconds(),
-                        RunTimeSec = reading.RunTimeSec,
-                        Current = h.Current,
-                        Best = h.Best,
-                        Unit = h.Unit,
-                        Map = Maps.MapOfHudUnit(h.Unit) ?? currentMap,
-                    });
+                        hud?.Dispose();
+                        hud = null;
+                        sinceOpen.Restart();
+                        failStreak = 0;
+                        try
+                        {
+                            hud = new HudReader(hwnd);
+                            if (reads > 0) { reopened++; log.Write($"画面の取得をやり直した（{reopened} 回目）"); }
+                        }
+                        catch (Exception e)
+                        {
+                            if (errors++ % 30 == 0) log.Write($"画面の取得を始められない（続けて試す）: {e.GetType().Name}: {e.Message}");
+                        }
+                    }
+                    if (hud is not null)
+                    {
+                        var reading = await hud.ReadAsync(reads == 0 ? debugDir : null);
+                        reads++;
+                        if (!reading.Captured) { captureFailures++; failStreak++; }
+                        else failStreak = 0;
+                        if (reading.Heights is HudHeights h)
+                        {
+                            readable++;
+                            pending.Add(new HudSample
+                            {
+                                At = DateTimeOffset.Now.ToUnixTimeMilliseconds(),
+                                RunTimeSec = reading.RunTimeSec,
+                                Current = h.Current,
+                                Best = h.Best,
+                                Unit = h.Unit,
+                                Map = Maps.MapOfHudUnit(h.Unit) ?? currentMap,
+                            });
+                        }
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                // 1 回の失敗で記録係を止めない。取得を作り直して続ける（ログは 30 回に 1 回だけ）
+                if (errors++ % 30 == 0) log.Write($"読み取りでエラー（続けて試す）: {e.GetType().Name}: {e.Message}");
+                hud?.Dispose();
+                hud = null;
             }
             if (sinceFlush.Elapsed >= FlushInterval) { Flush(); sinceFlush.Restart(); }
             if (sinceImport.Elapsed >= ImportInterval) { Import(); sinceImport.Restart(); }
             var wait = ReadInterval - tick.Elapsed;
             if (wait > TimeSpan.Zero) await Task.Delay(wait);
         }
+        hud?.Dispose();
 
         // ゲームが終わった: ログとセーブの書き終わりを待ってから最後に取り込む
         if (game.HasExited) await Task.Delay(TimeSpan.FromSeconds(2));
         Flush();
         Import();
         var memory = Process.GetCurrentProcess();
-        log.Write($"記録を終了: HUD を {reads} 回読み {readable} 回読めた / メモリ private {memory.PrivateMemorySize64 / 1048576} MB, working set {memory.WorkingSet64 / 1048576} MB");
+        log.Write($"記録を終了: HUD を {reads} 回読み {readable} 回読めた（取得失敗 {captureFailures}・エラー {errors}・やり直し {reopened}） / メモリ private {memory.PrivateMemorySize64 / 1048576} MB, working set {memory.WorkingSet64 / 1048576} MB");
         return 0;
     }
 

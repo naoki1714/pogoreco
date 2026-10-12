@@ -141,14 +141,21 @@ public class HeightTimelineTests
     }
 
     [Fact]
-    public void Map1は軌跡を割合に換算し_その後ろに画面の記録をつなぐ()
+    public void 画面の記録があれば_軌跡は使わず画面の記録だけを描く()
     {
         var climb = Climb(ClimbStatus.InProgress, 0, 3);
         var hud = HeightTimeline.SplitRuns([S(1000, 2, 99, 99), S(2000, 4, 0.5, 1)]);
         var series = HeightTimeline.Build(climb, hud);
         Assert.Equal("%", series.Unit);
-        Assert.Equal([1.0, 2, 3, 4], series.Points.Select(p => p.X)); // 2 秒目の画面の値は軌跡と重なるので使わない
-        Assert.Equal(0.5, series.Points[^1].Y);
+        Assert.Equal([2.0, 4], series.Points.Select(p => p.X)); // 0 秒からは描かない
+    }
+
+    [Fact]
+    public void 画面の記録がまったく無いランだけ_軌跡を割合に換算して描く()
+    {
+        var series = HeightTimeline.Build(Climb(ClimbStatus.InProgress, 0, 3), []);
+        Assert.Equal("%", series.Unit);
+        Assert.Equal([1.0, 2, 3], series.Points.Select(p => p.X));
     }
 
     [Fact]
@@ -162,14 +169,12 @@ public class HeightTimelineTests
     }
 
     [Fact]
-    public void 軌跡と画面の記録のあいだが長く空いているときは_直線でつながず線を切る()
+    public void 画面の記録が長く途切れているときは_直線でつながず線を切る()
     {
-        var climb = Climb(ClimbStatus.InProgress, 0, 3);
-        var hud = HeightTimeline.SplitRuns([S(1000, 5000, 50, 50), S(2000, 5001, 51, 51)]);
-        var series = HeightTimeline.Build(climb, hud);
-        Assert.Equal([1.0, 2, 3, 4, 5000, 5001], series.Points.Select(p => p.X)); // 3 と 5000 のあいだに切れ目（4）
-        var gap = Assert.Single(series.Points, p => double.IsNaN(p.Y));
-        Assert.InRange(gap.X, 3, 5000);
+        var hud = HeightTimeline.SplitRuns([S(1000, 5000, 50, 50), S(2000, 5001, 51, 51), S(1_000_000, 6000, 60, 60)]);
+        var series = HeightTimeline.Build(null, hud);
+        Assert.Equal([5000.0, 5001, 5002, 6000], series.Points.Select(p => p.X)); // 5001 と 6000 のあいだに切れ目
+        Assert.Single(series.Points, p => double.IsNaN(p.Y));
     }
 
     [Fact]

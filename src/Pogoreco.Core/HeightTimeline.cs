@@ -165,22 +165,19 @@ public static class HeightTimeline
     };
 
     /// <summary>
-    /// グラフに描く点。セーブ・リプレイの軌跡を換算できるときはそれを使い、その後ろに画面の記録をつなぐ。
-    /// 換算できない（Map 2 など）ときは、画面の記録だけ（単位をそろえるため）。
+    /// グラフに描く点。画面の記録（OCR）があれば、それだけを使う（記録のないところを軌跡で埋めたり、
+    /// 0 時間から描いたりしない）。画面の記録がまったく無いランだけ、セーブ・リプレイの軌跡を使う（換算できるマップのみ）。
     /// </summary>
     public static HeightSeries Build(ClimbRecord? climb, IReadOnlyList<HudRun> hud)
     {
         var map = climb?.Map ?? hud.FirstOrDefault()?.Map;
         var points = new List<(double X, double Y)>();
         string? unit = null;
-        if (climb is not null && climb.Heights.Count > 0)
+        if (climb is not null && climb.Heights.Count > 0 && !hud.Any(r => r.Samples.Count > 0))
         {
             var probe = Maps.ToDisplay(map, climb.Heights[0]);
-            if (probe.Unit != "" || hud.Count == 0)
-            {
-                unit = probe.Unit;
-                for (int i = 0; i < climb.Heights.Count; i++) points.Add((i + 1, Maps.ToDisplay(map, climb.Heights[i]).Value));
-            }
+            unit = probe.Unit;
+            for (int i = 0; i < climb.Heights.Count; i++) points.Add((i + 1, Maps.ToDisplay(map, climb.Heights[i]).Value));
         }
         var after = points.Count > 0 ? points[^1].X : double.NegativeInfinity;
         foreach (var s in hud.SelectMany(r => r.Samples).OrderBy(s => s.RunTimeSec))

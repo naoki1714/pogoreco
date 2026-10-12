@@ -28,21 +28,27 @@ public static class HeightTimeline
     /// </summary>
     public static List<HudRun> SplitRuns(IEnumerable<HudSample> samples)
     {
-        var ordered = samples.OrderBy(s => s.At).ToList();
+        var ordered = DropTimeOutliers(samples.OrderBy(s => s.At).ToList());
         var runs = new List<HudRun>();
         var current = new List<HudSample>();
         HudSample? prev = null;
+        HudSample? lastRead = null; // 実際に読めたタイムのうち、一番新しいもの（補った値は含めない）
         for (var i = 0; i < ordered.Count; i++)
         {
             var s = ordered[i];
             if (s.RunTimeSec is double t && prev?.RunTimeSec is double prevOkTime
                 && t - prevOkTime > (s.At - prev.At) / 1000.0 + 30)
                 s = s with { RunTimeSec = null };
+            var filled = false;
             if (s.RunTimeSec is null && prev?.RunTimeSec is double prevTime && s.At - prev.At < 5_000)
+            {
                 s = s with { RunTimeSec = prevTime + (s.At - prev.At) / 1000.0 };
+                filled = true;
+            }
             if (s.RunTimeSec is null) continue;
 
-            var wentBack = prev?.RunTimeSec is double pt && s.RunTimeSec < pt - 5;
+            // 巻き戻ったかは、実際に読めたタイムとだけ比べる（ポーズ中はタイムが止まるので、補った値は実際より進んでいることがある）
+            var wentBack = !filled && lastRead?.RunTimeSec is double pt && s.RunTimeSec < pt - 5;
             if (wentBack && !ConfirmsReset(ordered, i, s)) continue;
 
             var startsNew = prev is not null && (
@@ -55,9 +61,44 @@ public static class HeightTimeline
             }
             current.Add(s);
             prev = s;
+            if (!filled) lastRead = s;
         }
         if (current.Count > 0) runs.Add(new HudRun(current[0].Map, current[0].Unit, current));
         return runs;
+    }
+
+    /// <summary>
+    /// OCR が数字を読み違えた「ラン時間」を、読めなかった扱い（null）にする。ラン時間は実時間と同じ速さで進むので、
+    /// 「ラン時間 − 実時間」は（ポーズやリセットのあとを除いて）一定のはず。前に 2 個以上・後ろに 2 個以上の読めたサンプル
+    /// （それぞれ最大 4 個、60 秒以内）があり、前後の値が互いに合っているのに、そのサンプルだけが 8 秒以上ずれていれば誤読とする
+    /// （例: 121648 を 13648 と読む）。ポーズ・リセットのあとはずれが続き、前後が合わないので、誤読にはならない。
+    /// </summary>
+    internal static List<HudSample> DropTimeOutliers(List<HudSample> ordered)
+    {
+        const int Neighbors = 4;
+        const long WindowMs = 60_000;
+        const double Tolerance = 8;
+        var valid = Enumerable.Range(0, ordered.Count).Where(i => ordered[i].RunTimeSec is not null).ToList();
+        double Offset(int i) => ordered[i].RunTimeSec!.Value - ordered[i].At / 1000.0;
+        static double Median(List<double> xs)
+        {
+            xs.Sort();
+            return xs.Count % 2 == 1 ? xs[xs.Count / 2] : (xs[xs.Count / 2 - 1] + xs[xs.Count / 2]) / 2;
+        }
+        var result = new List<HudSample>(ordered);
+        for (var v = 0; v < valid.Count; v++)
+        {
+            var i = valid[v];
+            List<double> Side(int from, int to) => [.. Enumerable.Range(Math.Max(0, from), Math.Max(0, Math.Min(valid.Count - 1, to) - Math.Max(0, from) + 1))
+                .Where(k => k != v && Math.Abs(ordered[valid[k]].At - ordered[i].At) <= WindowMs).Select(k => Offset(valid[k]))];
+            var before = Side(v - Neighbors, v - 1);
+            var after = Side(v + 1, v + Neighbors);
+            if (before.Count < 2 || after.Count < 2) continue;
+            var (medBefore, medAfter) = (Median(before), Median(after));
+            if (Math.Abs(medBefore - medAfter) > Tolerance) continue; // 前後が合わない = ポーズ・リセットなどで本当にずれた
+            if (Math.Abs(Offset(i) - (medBefore + medAfter) / 2) > Tolerance) result[i] = ordered[i] with { RunTimeSec = null };
+        }
+        return result;
     }
 
     /// <summary>

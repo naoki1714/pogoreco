@@ -160,4 +160,35 @@ public class HeightTimelineTests
         Assert.Equal("m", series.Unit);
         Assert.Equal([(115_000.0, 665.0)], series.Points);
     }
+
+    [Fact]
+    public void 数字の読み違いで小さく巻き戻った値や桁が欠けた値は_ランを分けず取り除く()
+    {
+        // 121648 を 13648 と読む、119838 を 119821 と読む、など（実データの Map 2）
+        var samples = new List<HudSample>();
+        double[] times = [121640, 121641, 121642, 121643, 121644, 121645, 121646, 121647, 13648, 121649, 121650, 121651, 121638, 121653, 121654, 121655, 121656, 121657];
+        for (var i = 0; i < times.Length; i++) samples.Add(S(1_000_000 + i * 1000L, times[i], 600, 700, "m", 8));
+        var runs = HeightTimeline.SplitRuns(samples);
+        var run = Assert.Single(runs);
+        Assert.All(run.Samples, s => Assert.InRange(s.RunTimeSec!.Value, 121640, 121660));
+    }
+
+    [Fact]
+    public void 本当のリセットでラン時間が小さい値に戻ったら_別のランにする()
+    {
+        var samples = new List<HudSample>();
+        for (var i = 0; i < 20; i++) samples.Add(S(1_000_000 + i * 1000L, 5000 + i, 300, 300, "m", 8));
+        for (var i = 0; i < 20; i++) samples.Add(S(1_020_000 + i * 1000L, 3 + i, 20, 300, "m", 8));
+        Assert.Equal(2, HeightTimeline.SplitRuns(samples).Count);
+    }
+
+    [Fact]
+    public void ポーズ中にタイムが止まっていても_補った値より小さいだけでは別のランにしない()
+    {
+        // 誤読が続いてタイムを補ううちに、止まっている実際のタイム（119073）より先に進んだ値になり、そのあと読めた値が小さくなる
+        var samples = new List<HudSample> { S(1_000_000, 119073, 700, 716, "m", 8) };
+        for (var i = 1; i <= 12; i++) samples.Add(S(1_000_000 + i * 1000L, null, 700, 716, "m", 8));
+        for (var i = 13; i <= 20; i++) samples.Add(S(1_000_000 + i * 1000L, 119073, 700, 716, "m", 8));
+        Assert.Single(HeightTimeline.SplitRuns(samples));
+    }
 }

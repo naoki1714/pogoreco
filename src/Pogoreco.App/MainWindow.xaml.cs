@@ -44,7 +44,7 @@ public partial class MainWindow : Window
         var refresh = Ui.IconButton("M19,12 A7,7 0 1 1 16.9,7.1 M17,3.5 L17,7.5 L13,7.5", "更新", () => _ = RefreshAsync(), out _refreshSpin);
         refresh.Margin = new Thickness(0);
         SideActions.Children.Add(refresh);
-        SideActions.Children.Add(Ui.IconButton("M4,7 L20,7 M4,12 L20,12 M4,17 L20,17 M9,4.5 L9,9.5 M15,9.5 L15,14.5 M8,14.5 L8,19.5", "設定（読んでいるものとフォルダ）", () => _nav.Go("設定", n => SettingsPage.Build(n, StartTour)), out _));
+        SideActions.Children.Add(Ui.IconButton("M19.3,9.9 L21.9,10.4 L21.9,13.6 L19.3,14.1 L18.6,15.7 L20.1,17.9 L17.9,20.1 L15.7,18.6 L14.1,19.3 L13.6,21.9 L10.4,21.9 L9.9,19.3 L8.3,18.6 L6.1,20.1 L3.9,17.9 L5.4,15.7 L4.7,14.1 L2.1,13.6 L2.1,10.4 L4.7,9.9 L5.4,8.3 L3.9,6.1 L6.1,3.9 L8.3,5.4 L9.9,4.7 L10.4,2.1 L13.6,2.1 L14.1,4.7 L15.7,5.4 L17.9,3.9 L20.1,6.1 L18.6,8.3 Z M15,12 A3,3 0 1 1 9,12 A3,3 0 1 1 15,12", "設定（読んでいるものとフォルダ）", () => _nav.Go("設定", n => SettingsPage.Build(n, StartTour)), out _));
         SideActions.Children.Add(Ui.IconButton("M9,9 A3,3 0 1 1 13,12 Q12,12.6 12,14 M12,18 L12,18.1", "使い方（案内をもう一度見る）", StartTour, out _));
         // ショートカットは普通は一度しか作らないので、まだ無いときだけ出す
         _shortcutLink = Ui.Link("ショートカットを作成", CreateShortcut);

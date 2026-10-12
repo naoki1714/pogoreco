@@ -190,7 +190,27 @@ public static class HeightTimeline
             if (s.RunTimeSec is double t && t > after) points.Add((t, s.Current));
         }
         unit ??= "";
-        return new HeightSeries(unit, unit == "" ? points : RemoveSpikes(points, Falls.SpikeThreshold(unit)));
+        return new HeightSeries(unit, BreakGaps(unit == "" ? points : RemoveSpikes(points, Falls.SpikeThreshold(unit))));
+    }
+
+    /// <summary>記録のない時間がこれより長く空いたら、その間は線でつながない（秒）。</summary>
+    public const double MaxGapSec = 300;
+
+    /// <summary>
+    /// 記録が MaxGapSec より長く途切れているところに、Y が NaN の点を入れて線を切る。
+    /// セーブの軌跡（3 時間まで）と画面の記録のあいだなど、データの無い長い時間を、1 本の直線で結んで
+    /// 「その間ずっと同じ動きをした」ように見せないため。
+    /// </summary>
+    public static List<(double X, double Y)> BreakGaps(IReadOnlyList<(double X, double Y)> points)
+    {
+        var result = new List<(double X, double Y)>(points.Count + 4);
+        for (int i = 0; i < points.Count; i++)
+        {
+            if (i > 0 && !double.IsNaN(points[i].Y) && !double.IsNaN(points[i - 1].Y) && points[i].X - points[i - 1].X > MaxGapSec)
+                result.Add((points[i - 1].X + 1, double.NaN));
+            result.Add(points[i]);
+        }
+        return result;
     }
 
     /// <summary>

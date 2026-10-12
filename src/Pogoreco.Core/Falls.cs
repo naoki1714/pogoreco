@@ -36,7 +36,13 @@ public static class Falls
 
         foreach (var p in points)
         {
-            if (double.IsNaN(p.Y)) continue;
+            if (double.IsNaN(p.Y))
+            {
+                // 記録の途切れ: 途切れをまたいだ落下は数えない
+                if (descending) End();
+                hasPrev = false;
+                continue;
+            }
             if (!hasPrev) { prev = p; hasPrev = true; continue; }
             if (descending)
             {

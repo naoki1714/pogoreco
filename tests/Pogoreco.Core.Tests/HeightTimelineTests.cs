@@ -162,6 +162,30 @@ public class HeightTimelineTests
     }
 
     [Fact]
+    public void 軌跡と画面の記録のあいだが長く空いているときは_直線でつながず線を切る()
+    {
+        var climb = Climb(ClimbStatus.InProgress, 0, 3);
+        var hud = HeightTimeline.SplitRuns([S(1000, 5000, 50, 50), S(2000, 5001, 51, 51)]);
+        var series = HeightTimeline.Build(climb, hud);
+        Assert.Equal([1.0, 2, 3, 4, 5000, 5001], series.Points.Select(p => p.X)); // 3 と 5000 のあいだに切れ目（4）
+        var gap = Assert.Single(series.Points, p => double.IsNaN(p.Y));
+        Assert.InRange(gap.X, 3, 5000);
+    }
+
+    [Fact]
+    public void 点を間引いても_線の切れ目は残る()
+    {
+        var points = new List<(double X, double Y)>();
+        for (var i = 0; i < 3000; i++) points.Add((i, i % 7));
+        points.Add((3001, double.NaN));
+        for (var i = 0; i < 3000; i++) points.Add((10_000 + i, i % 5));
+        var down = Replay.Downsample(points, 600);
+        Assert.Single(down, p => double.IsNaN(p.Y));
+        Assert.True(down.Count < 1500);
+        Assert.Contains(down, p => p.X >= 10_000);
+    }
+
+    [Fact]
     public void 数字の読み違いで小さく巻き戻った値や桁が欠けた値は_ランを分けず取り除く()
     {
         // 121648 を 13648 と読む、119838 を 119821 と読む、など（実データの Map 2）

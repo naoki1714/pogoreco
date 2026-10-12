@@ -96,9 +96,30 @@ public static class Replay
     }
 
     /// <summary>グラフ用に点を減らす。区間ごとに最小・最大を残すので、落下や最高点が消えない。戻り値は (秒, 値)。</summary>
+    /// <summary>Y が NaN の点（線の切れ目）をはさむときは、切れ目で分けて、点の数に応じて割り振りながら間引く。</summary>
+    private static List<(double X, double Y)> DownsampleSegments(IReadOnlyList<(double X, double Y)> points, int maxPoints)
+    {
+        var segments = new List<List<(double X, double Y)>> { new() };
+        var breaks = new List<(double X, double Y)>();
+        foreach (var p in points)
+        {
+            if (double.IsNaN(p.Y)) { breaks.Add(p); segments.Add([]); }
+            else segments[^1].Add(p);
+        }
+        var total = Math.Max(1, segments.Sum(s => s.Count));
+        var output = new List<(double X, double Y)>(maxPoints + breaks.Count);
+        for (int i = 0; i < segments.Count; i++)
+        {
+            if (segments[i].Count > 0) output.AddRange(Downsample(segments[i], Math.Max(4, (int)((long)maxPoints * segments[i].Count / total))));
+            if (i < breaks.Count) output.Add(breaks[i]);
+        }
+        return output;
+    }
+
     public static List<(double X, double Y)> Downsample(IReadOnlyList<(double X, double Y)> points, int maxPoints)
     {
         if (points.Count <= maxPoints) return [.. points];
+        if (points.Any(p => double.IsNaN(p.Y))) return DownsampleSegments(points, maxPoints);
         int buckets = maxPoints / 2;
         double size = (double)points.Count / buckets;
         var output = new List<(double, double)>(maxPoints);

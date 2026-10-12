@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Windows 固有の処理（Steam・ゲームの場所、ゲームの起動、データの保存）。記録係と画面の両方で使う -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>Pogoreco.Platform</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pogoreco.Core\Pogoreco.Core.csproj" />
+  </ItemGroup>
+</Project>

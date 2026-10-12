@@ -1,0 +1,4 @@
+# 改行は LF にそろえる（テスト用のログが勝手に変換されないように）
+* text=auto eol=lf
+*.replay binary
+*.png binary

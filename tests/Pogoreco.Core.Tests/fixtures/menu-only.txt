@@ -1,0 +1,268 @@
+Log of A8 Engine 8.47.1 run at Sat Oct 10 21:47:28 2026
+player on Windows NT/2000/XP version 6.2 Build 9200
+Options -diag -nx 200 -ns
+App: C:\Steam\steamapps\common\Pogostuck\Pogostuck.exe in C:\Steam\steamapps\common\Pogostuck\
+Author: Felix Pohl
+
+DI interface opened
+Start Window opened(c) Conitec - www.3dgamestudio.com
+A8 Engine - Pro Edition V8.47.1 - Mar  9 2016
+Linking C:\Steam\steamapps\common\Pogostuck\Pogostuck.exe...
+
+Mouse found
+Dummy GPU pure T&L device 1ff9 detected
+D3D device Dummy GPU 1ff9 selected.
+pogoMain.dll opened
+pogoSound.dll opened
+data.wrs opened
+loca.wrs opened
+tex.wrs opened
+EVDF: function not found
+EnumDisplaySettingsExA: function not found
+ackSuperIsConnectedToFriendLobby: function not found
+ackSuperkuCreateLeaderboards: function not found
+ackSuperkuDownloadHighscores: function not found
+ackSuperkuDrawLeaderboardToEntity: function not found
+ackSuperkuFillTextWithHighscores: function not found
+ackSuperkuFillTextWithHighscores_SubModule: function not found
+ackSuperkuUploadTimeOrProgress: function not found
+bombPlantSpawner: function not found
+boneToTarget: function not found
+button_display_want2: function not found
+button_display_want3: function not found
+button_display_want4: function not found
+coinSingle_act: function not found
+cutscene_bar_display_dialog: function not found
+dialog_draw_gmap_button_helper_steam: function not found
+dialog_update_keys: function not found
+dungeonKey_act: function not found
+dungeonLadybug_act: function not found
+dungeonMainGetFloodKuAtPos: function not found
+dungeonMainGetFloodKuNewTarget: function not found
+dungeonObjFnc_dummy: function not found
+entDynamicFnc_LarvaBounce: function not found
+entDynamicFnc_dummy: function not found
+exec_dummyAction: function not found
+goldbars_act: function not found
+hpf_on_ent_remove_old: function not found
+hpf_on_level_load_old: function not found
+inputUpdate: function not found
+jumperMove: function not found
+kuBootsDataClear: function not found
+kuD3D9_findMeshComponents_module: function not found
+kuLevelProgressGet: function not found
+kuLoadFileToMemory: function not found
+kuSoundCreateDSB8FromFile: function not found
+kuSoundThreadStart: function not found
+kuSoundThreadWorker: function not found
+kuWRSunpack: function not found
+language_init: function not found
+menuAddInvite: function not found
+menuJoinGameFromSteamUI: function not found
+menu_item_function_pointer: function not found
+menu_page_friends_do: function not found
+menu_page_item_workshopUploadBar: function not found
+networkUpdate: function not found
+playExtraLevel: function not found
+pogoEditorLoad: function not found
+replayLoad: function not found
+storeAndUploadSaveGame: function not found
+treasureChest_act: function not found
+txt_for_ustr_kuWrap: function not found
+varlerp: function not found....................................................................................................................................................................
+Running POGOSTUCK.EXE
+Main started at 2.139 (-diag -> set consolePrintAckLog to 1)
+lobbyWantedPos(0)
+API CHECK...OK!(0 | 265064)
+steamInit next...
+ >> ackSuperkuDLLUpdateReceive at frame 0: ackSuperkuInit: START
+ >> ackSuperkuDLLUpdateReceive at frame 0: SteamAPI_Init now...
+ >> ackSuperkuDLLUpdateReceive at frame 0: create class instances now...
+ >> ackSuperkuDLLUpdateReceive at frame 0: get lite-C functions...
+ >> ackSuperkuDLLUpdateReceive at frame 0: misc stuff...
+ >> ackSuperkuDLLUpdateReceive at frame 0: init steam input...
+ >> ackSuperkuDLLUpdateReceive at frame 0: success...
+ackSuperkuInit: 2
+ menuPlayerSpecialDo at frame 0: isSpecial(0)
+Local User: CSteamID(76561190000000001) SaveFolder(\Pogostuck\76561190000000001)
+ main function at frame 0, startFullscreen(0) - materialInit done, wait one frame now so the engine initializes the DirectX device (DI 0082E4F8, app 268435456)
+typesInit_startup started
+wardrobeDudes_x7_startup started
+skHatFiles_startup started
+pogostickFileInit_startup started
+boostFileInit_startup started
+pauseEffectFileInit_startup started
+accessoryFileInit_startup started
+clothFileInit_startup started
+cached_startup started
+particles2_startup started
+planetAreaPos_startup started
+dungeonObjectFunctionArrayInit_startup started
+D3D_Init Window: 1024x600 -> Window: 1x1024x600x32
+Video memory found: 4091 MB
+Main loop at 2.492
+ main function at frame 1, hopefully with a valid DirectX device (008200F8, 0BC06560). InputInit() and others next...
+enc_init() at frame 1
+ menuProfileActiveGet at frame 1, localUser(76561190000000001) ~> cloudExists(1) cloudFilesize(12747) cloudTimestamp(1791620689) (current time 1791636448)
+ wardrobeLoadPreviews at frame 1: fileSize(372757) cloudReadResult(372757)
+Loaded wardrobe.previews at frame 1 after 7.016ms
+settingsDefault() executed.
+load settings(0).txt at frame 1 | folderMode(1) bufferMaxSize(12747)
+steamLanguageToID at frame 1: cSteamLanguage(english) => ID(0) - ackSuperkuLoadFile now... - ackSuperkuLoadFile(12747)
+590 settings loaded from ini file, 0 skipped/ not found
+ enc_do at frame 1: START, 
+kuSaveBufferGet(0,12747) at frame 1: pick buffer idx(0): (00000000, 0, 0)
+Save settings.backup via SteamFileWriteAsync at frame 1: cloudSaveAsyncStart(1), size(12747)
+kuWRSOpen(loca.wrs): byteOffsetBehindDataChunk(167183) registrySizeCompressed(326) registrySizeUncompressed(760) numFiles(19)
+readResult(1) ferror(0) feof(0) decodedSize(760)
+kuWRSOpen(loca.wrs): END
+kuWRSOpen(data.wrs): byteOffsetBehindDataChunk(158746018) registrySizeCompressed(32887) registrySizeUncompressed(90440) numFiles(2261)
+readResult(1) ferror(0) feof(0) decodedSize(90440)
+kuWRSOpen(data.wrs): END
+kuWRSOpen(tex.wrs): byteOffsetBehindDataChunk(61843465) registrySizeCompressed(7991) registrySizeUncompressed(24920) numFiles(623)
+readResult(1) ferror(0) feof(0) decodedSize(24920)
+kuWRSOpen(tex.wrs): END
+ playerDataInit at frame 1
+language_init(1) START
+language_init(-1024): loading text from file: english.txt ...
+txt_loadwFromFile(english.txt) at frame 1, kuWRSFileLoad size(27998) DONE - 461 strings loaded!Now sorting data...DONE
+menu_pages_destroy() at frame 1...COMPLETE
+menu_pages_init START
+menu_pages_init FIRST LOOP OK
+ equipStringsLanguageSetup
+menu_pages_init main menu now
+menu_pages_init: finished
+ main function at frame 1, set the window style and wait a frame after....
+1st frame with 4091 MB at 2.555
+menu_item_function_apply_video_changes() at frame 2 - START
+ appScaling(100%) -> fac(1.000)
+pp_on_d3d_lost_event() at frame 2 - remove rendertargets now
+ pp_remove_rendertargets() at frame 2.......END - pp_on_d3d_lost_event: remove rendertargets OK. pp_clear_viewstages now...
+ pp_clear_viewstages at frame 2.END - pp_on_d3d_lost_event: OK
+VIDEO-SETTINGS: size(wanted(0,0) adjusted(2560,1440)), pos(0,0), menu_fullscreen(1)- rect[monitor 2]: x(0,2560), y(0,1440) (App/ DPI scaling 100%)
+menu_item_function_apply_video_changes(), calling video_set(2560,1440) B at frame 2...
+D3D_Resize Window: 2560x1440 -> Window: 1x2560x1440x32
+ -> video_set: screen_size(2560,1440)OK!
+pp_on_d3d_reset_event() at frame 2, screen_size(2560,1440)
+ pp_create_rendertargets() at frame 2......END
+ main function continues after applying video settings... at frame 2AB
+ main function continues at frame 3 - C calling kuSoundInit(002D0C2E)...OK(0, SetCoopLevel 0). calling kuSoundSourcesInit...
+kupackRegistryLoad(1.kupack): START at frame 3
+ -file_open_read: 264195
+- registryLength: 14188
+- numFiles: 365
+kupackRegistryLoad(): END
+ pp_create_rendertargets() at frame 3......END
+ menuLoadBackupStats at frame(3): cloudExists(1) cloudFilesize(74)/74 | cloudLoadResult(74)
+ >> ackSuperkuDLLUpdateReceive at frame 3: calling RequestCurrentStats now~~~
+Request current stats: 1
+convertSaveFilesNecessary: 0
+levelLoadMenu - START at frame 3 (level_current -1)
+ networkDungeonCoopReset at frame 3
+ >> ackSuperkuDLLUpdateReceive at frame 3: P2P::LeaveLobby: mode = 0, level key value: _main, isValid(0)
+levelClear(0) - START at frame 3
+playerDataClear at frame 3
+menu_item_function_clear_replays at frame 3, eventData(0), pvar(00000000)
+ executing skateClear at frame 3
+ menuPlanetClear() at frame 3, menuPlanetEnt(00000000) [
+levelClear - END
+LevelInit at 3.055 0 lmaps 0 textures...ok
+LevelReady at 3.066
+ on_level_load_event at frame 5 | level_load_do_pp(0) | 108865C0 | KAT (and level load event) done
+language_init(0) START
+language_init(5120): loading text from file: japanese.txt ...
+txt_loadwFromFile(japanese.txt) at frame 5, kuWRSFileLoad size(22116) DONE - 461 strings loaded!Now sorting data...DONE
+menu_pages_destroy() at frame 5...COMPLETE
+menu_pages_init START
+menu_pages_init FIRST LOOP OK
+ equipStringsLanguageSetup
+menu_pages_init main menu now
+menu_pages_init: finished
+ >> ackSuperkuDLLUpdateReceive at frame 5: OnFileWriteAsyncCompleted: slot(0) file(settings.backup) mode(0) Result(1) APICall(14950320909051945891)
+ackSuperkuAddMeToPlanetLeaderboard at frame 5: cCountryCode(JP) -> area(9), 
+    upload timestamp(243816449) to leaderboard()...
+ackSuperkuUploadHighscoreWDetails(planetAreasCombined) called at frame 5(OK)
+No valid technique in pp_fxaa_luma - enforcing tech_00
+No valid technique in pp_fxaa - enforcing tech_00
+No valid technique in pp_display_mat - enforcing Combine
+No valid technique in ppObj_depth_mat - enforcing DepthTechnique
+kuAutoTextureUpdateBmpPointer() at frame 6: 
+ menuPlanetInit at frame 6
+ ackSuperkuFindLeaderboard(mainTime) at frame 6
+ ackSuperkuFindLeaderboard(noSkipTime) at frame 6
+ ackSuperkuFindLeaderboard(invisibleTime) at frame 6
+ ackSuperkuFindLeaderboard(eIceMode) at frame 6
+ ackSuperkuFindLeaderboard(wmonolithTime) at frame 6
+ ackSuperkuFindLeaderboard(xmonolithBoost) at frame 6
+ ackSuperkuFindLeaderboard(ymonolith720) at frame 6
+ ackSuperkuFindLeaderboard(zmonolithPuzzle) at frame 6
+ ackSuperkuFindLeaderboard(upsideDown) at frame 6
+ ackSuperkuFindLeaderboard(gmastery) at frame 6
+ ackSuperkuFindLeaderboard(map3Default) at frame 6
+ ackSuperkuFindLeaderboard(appendix_A) at frame 6
+ ackSuperkuFindLeaderboard(map3UpsideDown) at frame 6
+ ackSuperkuFindLeaderboard(map1UpsideDown) at frame 6
+ ackSuperkuFindLeaderboard(map1Puzzle) at frame 6
+ ackSuperkuFindLeaderboard(map1SmallRegular) at frame 6
+ ackSuperkuFindLeaderboard(map1SmallNoBoost) at frame 6
+No valid technique in characterEyesB_mat - enforcing DiffuseTechnique
+No valid technique in characterMouth_mat - enforcing DiffuseTechnique
+No valid technique in pogostick_mat - enforcing DiffuseTechnique
+ >> ackSuperkuDLLUpdateReceive at frame 6: OnUserStatsReceived(Game 1, ErrorCode 1)
+menuGetSteamStats OK at frame 6 stats(wins 12 | 0, expTotal 1647100, expLevel 6883, level 181, bestTime 819702)
+ MASTERY at frame 6: 61 19 181 ~> mastery(77.1)
+No valid technique in characterGoldMouthB_mat - enforcing DiffuseTechnique
+No valid technique in characterSimpleColor_mat - enforcing DiffuseTechnique
+No valid technique in clothShirtB_mat - enforcing DiffuseTechnique
+No valid technique in character_mat - enforcing DiffuseTechnique
+No valid technique in clothBoxerB_mat - enforcing DiffuseTechnique
+No valid technique in characterSimpleBWE_mat - enforcing DiffuseTechnique
+No valid technique in clockPlanet_mat - enforcing DiffuseTechnique
+No valid technique in earthGlow_mat - enforcing DiffuseTechnique
+No valid technique in earth_mat
+kuAutoTextureUpdateBmpPointer() at frame 7:  grabbed highscore still -> -1
+ackSuperkuDownloadPlanetTaskEvent(planetAreasCombined,1) at frame 88, ackSuperkuNumScores(100), currentTime(243816452), invalidAreaCounter(0)
+ inputSetAllKeysToPressed at frame 349:
+ inputSetAllKeysToPressed at frame 349:
+ OPEN menu at frame 349 (101) m(0) ls(0) 2(0)
+ enc_do at frame 350: START, 
+kuSaveBufferGet(0,12747) at frame 350: pick buffer idx(1): (00000000, 0, 0)
+Save settings.txt via SteamFileWriteAsync at frame 350: cloudSaveAsyncStart(1), size(12747)
+ >> ackSuperkuDLLUpdateReceive at frame 350: OnFileWriteAsyncCompleted: slot(1) file(settings.txt) mode(1) Result(1) APICall(14372975764199418212)
+pp_on_d3d_lost_event() at frame 5346 - remove rendertargets now
+ pp_remove_rendertargets() at frame 5346.......END - pp_on_d3d_lost_event: remove rendertargets OK. pp_clear_viewstages now...
+ pp_clear_viewstages at frame 5346.END - pp_on_d3d_lost_event: OK
+pp_on_d3d_reset_event() at frame 5346, screen_size(2560,1440)
+ pp_create_rendertargets() at frame 5346......END
+kuAutoTextureUpdateBmpPointer() at frame 5348: 
+ackSuperkuAddMeToPlanetLeaderboard at frame 73403: cCountryCode(JP) -> area(9), 
+    upload timestamp(243817051) to leaderboard()...
+ackSuperkuUploadHighscoreWDetails(planetAreasCombined) called at frame 73403(OK)
+menu_item_function_default at frame 23103: exitGame()!
+exitGame at frame 23103: set mainFrameMode to MAIN_FRAME_EXIT_GAME | op(0)
+mainFrameExitGame: exit at frame 23104 with exitTimer(0.0) and exitState(3)
+on_exit_event() at frame 23104: START
+editorClearLevel at frame 23104: listLength(0)...OK!
+levelClear(0) - START at frame 23104
+playerDataClear at frame 23104
+menu_item_function_clear_replays at frame 23104, eventData(0), pvar(00000000)
+ executing skateClear at frame 23104
+ menuPlanetClear() at frame 23104, menuPlanetEnt(108895FC) [00000000,00000000,0DC59208,0DC59308,00000000,00000000,00000000,00000000,0DC59C68,0DC59C88,]
+levelClear - END
+menu_pages_destroy() at frame 23104...COMPLETE
+drawContainerFree at frame 23104
+kuWRSCloseAll at frame 23104
+kuAutoTextureDestroy() at frame 23104: 
+kuAutoTextureDestroy executed.
+kuSoundDestroyDevice() at frame 23104 - START
+kuSoundDestroyDevice() - END
+ackSuperkuShutdown...OK!
+on_exit_event() END
+Normal exit at 1096.956
+Close level,DLL,objects
+Free input,funcs,panels,defs,syns,views,strings,vars..ok
+Free sounds,bmaps,fonts,hash,defs1,script..ok
+Close dx,multimedia,D3D,engine,nexus..ok
+A8 Engine - Pro Edition V8.47.1 - Mar  9 2016
+(c) Conitec - www.3dgamestudio.com
+Close window at 1097.012

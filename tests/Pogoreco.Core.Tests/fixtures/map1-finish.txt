@@ -1,0 +1,731 @@
+Log of A8 Engine 8.47.1 run at Sun Oct 11 05:15:13 2026
+player on Windows NT/2000/XP version 6.2 Build 9200
+Options -diag -diag -nx 200 -ns
+App: C:\Steam\steamapps\common\Pogostuck\Pogostuck.exe in C:\Steam\steamapps\common\Pogostuck\
+Author: Felix Pohl
+
+DI interface opened
+Start Window opened(c) Conitec - www.3dgamestudio.com
+A8 Engine - Pro Edition V8.47.1 - Mar  9 2016
+Linking C:\Steam\steamapps\common\Pogostuck\Pogostuck.exe...
+
+DI Dummy Joystick 5 axes 10 buttons initialized
+Mouse found
+Joystick found
+Dummy GPU pure T&L device 1ff9 detected
+D3D device Dummy GPU 1ff9 selected.
+pogoMain.dll opened
+pogoSound.dll opened
+data.wrs opened
+loca.wrs opened
+tex.wrs opened
+EVDF: function not found
+EnumDisplaySettingsExA: function not found
+ackSuperIsConnectedToFriendLobby: function not found
+ackSuperkuCreateLeaderboards: function not found
+ackSuperkuDownloadHighscores: function not found
+ackSuperkuDrawLeaderboardToEntity: function not found
+ackSuperkuFillTextWithHighscores: function not found
+ackSuperkuFillTextWithHighscores_SubModule: function not found
+ackSuperkuUploadTimeOrProgress: function not found
+bombPlantSpawner: function not found
+boneToTarget: function not found
+button_display_want2: function not found
+button_display_want3: function not found
+button_display_want4: function not found
+coinSingle_act: function not found
+cutscene_bar_display_dialog: function not found
+dialog_draw_gmap_button_helper_steam: function not found
+dialog_update_keys: function not found
+dungeonKey_act: function not found
+dungeonLadybug_act: function not found
+dungeonMainGetFloodKuAtPos: function not found
+dungeonMainGetFloodKuNewTarget: function not found
+dungeonObjFnc_dummy: function not found
+entDynamicFnc_LarvaBounce: function not found
+entDynamicFnc_dummy: function not found
+exec_dummyAction: function not found
+goldbars_act: function not found
+hpf_on_ent_remove_old: function not found
+hpf_on_level_load_old: function not found
+inputUpdate: function not found
+jumperMove: function not found
+kuBootsDataClear: function not found
+kuD3D9_findMeshComponents_module: function not found
+kuLevelProgressGet: function not found
+kuLoadFileToMemory: function not found
+kuSoundCreateDSB8FromFile: function not found
+kuSoundThreadStart: function not found
+kuSoundThreadWorker: function not found
+kuWRSunpack: function not found
+language_init: function not found
+menuAddInvite: function not found
+menuJoinGameFromSteamUI: function not found
+menu_item_function_pointer: function not found
+menu_page_friends_do: function not found
+menu_page_item_workshopUploadBar: function not found
+networkUpdate: function not found
+playExtraLevel: function not found
+pogoEditorLoad: function not found
+replayLoad: function not found
+storeAndUploadSaveGame: function not found
+treasureChest_act: function not found
+txt_for_ustr_kuWrap: function not found
+varlerp: function not found....................................................................................................................................................................
+Running POGOSTUCK.EXE
+Main started at 1.971 (-diag -> set consolePrintAckLog to 1)
+lobbyWantedPos(0)
+API CHECK...OK!(0 | 265064)
+steamInit next...
+ >> ackSuperkuDLLUpdateReceive at frame 0: ackSuperkuInit: START
+ >> ackSuperkuDLLUpdateReceive at frame 0: SteamAPI_Init now...
+ >> ackSuperkuDLLUpdateReceive at frame 0: create class instances now...
+ >> ackSuperkuDLLUpdateReceive at frame 0: get lite-C functions...
+ >> ackSuperkuDLLUpdateReceive at frame 0: misc stuff...
+ >> ackSuperkuDLLUpdateReceive at frame 0: init steam input...
+ >> ackSuperkuDLLUpdateReceive at frame 0: success...
+ackSuperkuInit: 2
+ menuPlayerSpecialDo at frame 0: isSpecial(0)
+Local User: CSteamID(76561190000000001) SaveFolder(\Pogostuck\76561190000000001)
+ main function at frame 0, startFullscreen(0) - materialInit done, wait one frame now so the engine initializes the DirectX device (DI 02815BB8, app 268435456)
+typesInit_startup started
+wardrobeDudes_x7_startup started
+skHatFiles_startup started
+pogostickFileInit_startup started
+boostFileInit_startup started
+pauseEffectFileInit_startup started
+accessoryFileInit_startup started
+clothFileInit_startup started
+cached_startup started
+particles2_startup started
+planetAreaPos_startup started
+dungeonObjectFunctionArrayInit_startup started
+D3D_Init Window: 1024x600 -> Window: 1x1024x600x32
+Video memory found: 4091 MB
+Main loop at 2.254
+ main function at frame 1, hopefully with a valid DirectX device (00880418, 0B947460). InputInit() and others next...
+enc_init() at frame 1
+ menuProfileActiveGet at frame 1, localUser(76561190000000001) ~> cloudExists(1) cloudFilesize(12747) cloudTimestamp(1791636456) (current time 1791663315)
+ wardrobeLoadPreviews at frame 1: fileSize(372757) cloudReadResult(372757)
+Loaded wardrobe.previews at frame 1 after 5.109ms
+settingsDefault() executed.
+load settings(0).txt at frame 1 | folderMode(1) bufferMaxSize(12747)
+steamLanguageToID at frame 1: cSteamLanguage(english) => ID(0) - ackSuperkuLoadFile now... - ackSuperkuLoadFile(12747)
+590 settings loaded from ini file, 0 skipped/ not found
+ enc_do at frame 1: START, 
+kuSaveBufferGet(0,12747) at frame 1: pick buffer idx(0): (00000000, 0, 0)
+Save settings.backup via SteamFileWriteAsync at frame 1: cloudSaveAsyncStart(1), size(12747)
+kuWRSOpen(loca.wrs): byteOffsetBehindDataChunk(167183) registrySizeCompressed(326) registrySizeUncompressed(760) numFiles(19)
+readResult(1) ferror(0) feof(0) decodedSize(760)
+kuWRSOpen(loca.wrs): END
+kuWRSOpen(data.wrs): byteOffsetBehindDataChunk(158746018) registrySizeCompressed(32887) registrySizeUncompressed(90440) numFiles(2261)
+readResult(1) ferror(0) feof(0) decodedSize(90440)
+kuWRSOpen(data.wrs): END
+kuWRSOpen(tex.wrs): byteOffsetBehindDataChunk(61843465) registrySizeCompressed(7991) registrySizeUncompressed(24920) numFiles(623)
+readResult(1) ferror(0) feof(0) decodedSize(24920)
+kuWRSOpen(tex.wrs): END
+ playerDataInit at frame 1
+language_init(1) START
+language_init(-1024): loading text from file: english.txt ...
+txt_loadwFromFile(english.txt) at frame 1, kuWRSFileLoad size(27998) DONE - 461 strings loaded!Now sorting data...DONE
+menu_pages_destroy() at frame 1...COMPLETE
+menu_pages_init START
+menu_pages_init FIRST LOOP OK
+ equipStringsLanguageSetup
+menu_pages_init main menu now
+menu_pages_init: finished
+ main function at frame 1, set the window style and wait a frame after....
+1st frame with 4091 MB at 2.313
+menu_item_function_apply_video_changes() at frame 2 - START
+ appScaling(100%) -> fac(1.000)
+pp_on_d3d_lost_event() at frame 2 - remove rendertargets now
+ pp_remove_rendertargets() at frame 2.......END - pp_on_d3d_lost_event: remove rendertargets OK. pp_clear_viewstages now...
+ pp_clear_viewstages at frame 2.END - pp_on_d3d_lost_event: OK
+VIDEO-SETTINGS: size(wanted(0,0) adjusted(2560,1440)), pos(0,0), menu_fullscreen(1)- rect[monitor 2]: x(0,2560), y(0,1440) (App/ DPI scaling 100%)
+menu_item_function_apply_video_changes(), calling video_set(2560,1440) B at frame 2...
+D3D_Resize Window: 2560x1440 -> Window: 1x2560x1440x32
+ -> video_set: screen_size(2560,1440)OK!
+pp_on_d3d_reset_event() at frame 2, screen_size(2560,1440)
+ pp_create_rendertargets() at frame 2......END
+ main function continues after applying video settings... at frame 2AB
+ main function continues at frame 3 - C calling kuSoundInit(008511B6)...OK(0, SetCoopLevel 0). calling kuSoundSourcesInit...
+kupackRegistryLoad(1.kupack): START at frame 3
+ -file_open_read: 264195
+- registryLength: 14188
+- numFiles: 365
+kupackRegistryLoad(): END
+ pp_create_rendertargets() at frame 3......END
+ menuLoadBackupStats at frame(3): cloudExists(1) cloudFilesize(74)/74 | cloudLoadResult(74)
+ >> ackSuperkuDLLUpdateReceive at frame 3: calling RequestCurrentStats now~~~
+Request current stats: 1
+convertSaveFilesNecessary: 0
+levelLoadMenu - START at frame 3 (level_current -1)
+ networkDungeonCoopReset at frame 3
+ >> ackSuperkuDLLUpdateReceive at frame 3: P2P::LeaveLobby: mode = 0, level key value: _main, isValid(0)
+levelClear(0) - START at frame 3
+playerDataClear at frame 3
+menu_item_function_clear_replays at frame 3, eventData(0), pvar(00000000)
+ executing skateClear at frame 3
+ menuPlanetClear() at frame 3, menuPlanetEnt(00000000) [
+levelClear - END
+LevelInit at 2.689 0 lmaps 0 textures...ok
+LevelReady at 2.702
+ on_level_load_event at frame 5 | level_load_do_pp(0) | 108845C0 | KAT (and level load event) done
+language_init(0) START
+language_init(5120): loading text from file: japanese.txt ...
+txt_loadwFromFile(japanese.txt) at frame 5, kuWRSFileLoad size(22116) DONE - 461 strings loaded!Now sorting data...DONE
+menu_pages_destroy() at frame 5...COMPLETE
+menu_pages_init START
+menu_pages_init FIRST LOOP OK
+ equipStringsLanguageSetup
+menu_pages_init main menu now
+menu_pages_init: finished
+ >> ackSuperkuDLLUpdateReceive at frame 5: OnFileWriteAsyncCompleted: slot(0) file(settings.backup) mode(0) Result(1) APICall(6339176857024006950)
+ackSuperkuAddMeToPlanetLeaderboard at frame 5: cCountryCode(JP) -> area(9), 
+    upload timestamp(243843316) to leaderboard()...
+ackSuperkuUploadHighscoreWDetails(planetAreasCombined) called at frame 5(OK)
+No valid technique in pp_fxaa_luma - enforcing tech_00
+No valid technique in pp_fxaa - enforcing tech_00
+No valid technique in pp_display_mat - enforcing Combine
+No valid technique in ppObj_depth_mat - enforcing DepthTechnique
+kuAutoTextureUpdateBmpPointer() at frame 6: 
+ menuPlanetInit at frame 6
+ ackSuperkuFindLeaderboard(mainTime) at frame 6
+ ackSuperkuFindLeaderboard(noSkipTime) at frame 6
+ ackSuperkuFindLeaderboard(invisibleTime) at frame 6
+ ackSuperkuFindLeaderboard(eIceMode) at frame 6
+ ackSuperkuFindLeaderboard(wmonolithTime) at frame 6
+ ackSuperkuFindLeaderboard(xmonolithBoost) at frame 6
+ ackSuperkuFindLeaderboard(ymonolith720) at frame 6
+ ackSuperkuFindLeaderboard(zmonolithPuzzle) at frame 6
+ ackSuperkuFindLeaderboard(upsideDown) at frame 6
+ ackSuperkuFindLeaderboard(gmastery) at frame 6
+ ackSuperkuFindLeaderboard(map3Default) at frame 6
+ ackSuperkuFindLeaderboard(appendix_A) at frame 6
+ ackSuperkuFindLeaderboard(map3UpsideDown) at frame 6
+ ackSuperkuFindLeaderboard(map1UpsideDown) at frame 6
+ ackSuperkuFindLeaderboard(map1Puzzle) at frame 6
+ ackSuperkuFindLeaderboard(map1SmallRegular) at frame 6
+ ackSuperkuFindLeaderboard(map1SmallNoBoost) at frame 6
+No valid technique in characterEyesB_mat - enforcing DiffuseTechnique
+No valid technique in characterMouth_mat - enforcing DiffuseTechnique
+No valid technique in pogostick_mat - enforcing DiffuseTechnique
+ >> ackSuperkuDLLUpdateReceive at frame 6: OnUserStatsReceived(Game 1, ErrorCode 1)
+menuGetSteamStats OK at frame 6 stats(wins 12 | 0, expTotal 1647100, expLevel 6883, level 181, bestTime 819702)
+ MASTERY at frame 6: 61 19 181 ~> mastery(77.1)
+No valid technique in characterSimpleColor_mat - enforcing DiffuseTechnique
+No valid technique in clothShirtB_mat - enforcing DiffuseTechnique
+No valid technique in clothDress_mat - enforcing DiffuseTechnique
+No valid technique in clothBoxerB_mat - enforcing DiffuseTechnique
+No valid technique in clockPlanet_mat - enforcing DiffuseTechnique
+No valid technique in earthGlow_mat - enforcing DiffuseTechnique
+No valid technique in earth_mat - enforcing DiffuseTechnique
+No valid technique in backgroundGradient_mat - enforcing DiffuseTechnique
+No valid technique in cloudsBG_mat
+kuAutoTextureUpdateBmpPointer() at frame 7:  grabbed highscore still -> -1
+ackSuperkuDownloadPlanetTaskEvent(planetAreasCombined,1) at frame 269, ackSuperkuNumScores(100), currentTime(243843318), invalidAreaCounter(0)
+ inputSetAllKeysToPressed at frame 687:
+ inputSetAllKeysToPressed at frame 687:
+ OPEN menu at frame 687 (101) m(0) ls(0) 2(0)
+ enc_do at frame 688: START, 
+kuSaveBufferGet(0,12747) at frame 688: pick buffer idx(1): (00000000, 0, 0)
+Save settings.txt via SteamFileWriteAsync at frame 688: cloudSaveAsyncStart(1), size(12747)
+ >> ackSuperkuDLLUpdateReceive at frame 688: OnFileWriteAsyncCompleted: slot(1) file(settings.txt) mode(1) Result(1) APICall(5821570644758565551)
+ MENU jikanda at frame 5913:
+ >> ackSuperkuDLLUpdateReceive at frame 6515: P2P::LeaveLobby: mode = 0, level key value: _main, isValid(0)
+ networkDungeonCoopReset at frame 6515
+ total_ticks_reset at frame 6515
+levelReset(0) - START at frame 1 | level_requested(-2)
+levelClear(0) - START at frame 1
+playerDataClear at frame 1
+menu_item_function_clear_replays at frame 1, eventData(0), pvar(00000000)
+ executing skateClear at frame 1
+ menuPlanetClear() at frame 1, menuPlanetEnt(108875FC) [0DD36548,00000000,0DD36608,0DD36D68,00000000,0DD36D88,0DD36DA8,00000000,00000000,0DD36DC8,]
+levelClear - END
+editorLevelLoad(main) - START at frame 1
+editorClearLevel at frame 1: listLength(0)...OK!
+editorLevelLoad() - level_load...
+LevelInit at 69.218
+408 entities 0 cameras 0 lights 0 sounds 8 paths
+ 1 lmaps 1 textures 1 meshes 1 submeshes 12 faces...ok
+LevelReady at 70.697
+ on_level_load_event at frame 32 | level_load_do_pp(1) | 1090D060 | KAT (and level load event) doneOK!
+editorLevelLoad at frame 33: BEFORE LOOP
+editorLevelLoad: file(main.pak), file_load -> size(9829), result(07376B99)
+editorLevelLoad at frame 33: LOOP START
+kuAutoTextureUpdateBmpPointer() at frame 34: 
+ackSuperkuDownloadFriendInfoTaskEvent(friendInfo,1) at frame 57 - numScores(4) - leaderboardPos(3)
+ 2025 offline friend nameplate repaint event at frame 58
+ FINISHED LOADING!... free file memory...OK!
+levelReset - END at frame 77
+ nightmodeSetFruitToRain at frame 77 (00000000, 00000000) | levelLoadActive(0) level_current(0)
+ ~~~ PLAYER ENT CREATE AT FRAME 77, outroPlaying(0), level_current(0)
+WOW: calling playerLoadPositionNew() at frame 77, doIntro(1) level(0) ~> cloudExists(0) cloudFilesize(0) cloudTimestamp(0)
+ >> ackSuperkuDLLUpdateReceive at frame 78: ackSuperkuUpdatePlayerArray ATTENTION: reconnectWanted(2) | lobbyTypes(-1,0), findStatus(0), enteredStatus(-2000), badCounter(-32) lobbyLevelID(-1)currentLevel(-1) -> ro_main2
+ >> ackSuperkuDLLUpdateReceive at frame 78: P2P::LeaveLobby: mode = 0, level key value: ro_main2, isValid(0)
+ >> ackSuperkuDLLUpdateReceive at frame 78: FindLobbies: levelStr(ro_main2)
+ >> ackSuperkuDLLUpdateReceive at frame 89: OnLobbyMatchList: matching(4), lobbyNums(1,15,8,1,0)
+ >> ackSuperkuDLLUpdateReceive at frame 89: P2P::LeaveLobby: mode = 0, level key value: ro_main2, isValid(0)
+ackSuperkuDrawLeaderboardToEntity(10885078) at frame 89, numUserPos(-1) -> bp(1166BE10)... bmap_process OK  Draw ranking via text target_map feature...
+ >> ackSuperkuDLLUpdateReceive at frame 98: OnLobbyEntered - CALLRESULT: ChatRoomResponse = 1
+ >> ackSuperkuDLLUpdateReceive at frame 103: getOrSetPlayerID: player(76561190000000001, 1000000001, 17825793) put into slot 13
+ackSuperkuDrawLeaderboardToEntity(10885078) at frame 320, numUserPos(7) -> bp(1166BE10)... bmap_process OK  Draw ranking via text target_map feature...
+replayInit at frame 2276: replayKuLocal(00000000) | h(0) b(0) statusFlags(0)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 15304
+calling playerSavePosition from playerMove at frame 15304, request(0,1)
+xXx: calling playerSavePosition() at frame 15304, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,4148) at frame 15304: pick buffer idx(8): (00000000, 0, 0) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(4148/ 4148) cloudSaveAsyncStart(1,0.11)
+ >> ackSuperkuDLLUpdateReceive at frame 15305: OnFileWriteAsyncCompleted: slot(2) file(rog) mode(0) Result(1) APICall(2330754008075583484)
+ >> ackSuperkuDLLUpdateReceive at frame 25296: User left game lobby!
+ackSuperDLLPacketReceive() at frame 25296: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+ >> ackSuperkuDLLUpdateReceive at frame 26482: User joined game lobby!
+ >> ackSuperkuDLLUpdateReceive at frame 28246: User left game lobby!
+ackSuperDLLPacketReceive() at frame 28246: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 28470
+calling playerSavePosition from playerMove at frame 28470, request(0,1)
+xXx: calling playerSavePosition() at frame 28470, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,8172) at frame 28470: pick buffer idx(9): (00000000, 0, 0) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(8172/ 8172) cloudSaveAsyncStart(1,0.13)
+ >> ackSuperkuDLLUpdateReceive at frame 28472: OnFileWriteAsyncCompleted: slot(3) file(rog) mode(0) Result(1) APICall(12663255430928032241)
+ M U S I C (8): minCount(0) -> new cooldown(60)
+ >> ackSuperkuDLLUpdateReceive at frame 41471: User joined game lobby!
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 41929
+calling playerSavePosition from playerMove at frame 41929, request(0,1)
+xXx: calling playerSavePosition() at frame 41929, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,12196) at frame 41929: pick buffer idx(10): (00000000, 0, 0) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(12196/ 12196) cloudSaveAsyncStart(1,0.18)
+ >> ackSuperkuDLLUpdateReceive at frame 41930: OnFileWriteAsyncCompleted: slot(4) file(rog) mode(0) Result(1) APICall(8249499604544912389)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 55387
+calling playerSavePosition from playerMove at frame 55387, request(0,1)
+xXx: calling playerSavePosition() at frame 55387, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,16228) at frame 55387: pick buffer idx(11): (00000000, 0, 0) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(16228/ 16228) cloudSaveAsyncStart(1,0.18)
+ >> ackSuperkuDLLUpdateReceive at frame 55389: OnFileWriteAsyncCompleted: slot(5) file(rog) mode(0) Result(1) APICall(9179793042099830927)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 68761
+calling playerSavePosition from playerMove at frame 68761, request(0,1)
+xXx: calling playerSavePosition() at frame 68761, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,20252) at frame 68761: pick buffer idx(12): (00000000, 0, 0) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(20252/ 20252) cloudSaveAsyncStart(1,0.21)
+ >> ackSuperkuDLLUpdateReceive at frame 68762: OnFileWriteAsyncCompleted: slot(6) file(rog) mode(0) Result(1) APICall(14233504329477665749)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 82171
+calling playerSavePosition from playerMove at frame 82171, request(0,1)
+xXx: calling playerSavePosition() at frame 82171, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,24276) at frame 82171: pick buffer idx(13): (00000000, 0, 0) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(24276/ 24276) cloudSaveAsyncStart(1,0.23)
+ >> ackSuperkuDLLUpdateReceive at frame 82172: OnFileWriteAsyncCompleted: slot(7) file(rog) mode(0) Result(1) APICall(16594262900245302068)
+ M U S I C (13): minCount(0) -> new cooldown(60)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 95425
+calling playerSavePosition from playerMove at frame 95425, request(0,1)
+xXx: calling playerSavePosition() at frame 95425, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,28300) at frame 95425: pick buffer idx(14): (00000000, 0, 0) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(28300/ 28300) cloudSaveAsyncStart(1,0.30)
+ >> ackSuperkuDLLUpdateReceive at frame 95426: OnFileWriteAsyncCompleted: slot(0) file(rog) mode(0) Result(1) APICall(9734291804744024427)
+ >> ackSuperkuDLLUpdateReceive at frame 98891: User left game lobby!
+ackSuperDLLPacketReceive() at frame 98891: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+ >> ackSuperkuDLLUpdateReceive at frame 1666: User joined game lobby!
+ >> ackSuperkuDLLUpdateReceive at frame 6608: User left game lobby!
+ackSuperDLLPacketReceive() at frame 6608: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 8730
+calling playerSavePosition from playerMove at frame 8730, request(0,1)
+xXx: calling playerSavePosition() at frame 8730, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,32332) at frame 8730: pick buffer idx(15): (00000000, 0, 0) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(32332/ 32332) cloudSaveAsyncStart(1,0.24)
+ >> ackSuperkuDLLUpdateReceive at frame 8731: OnFileWriteAsyncCompleted: slot(1) file(rog) mode(0) Result(1) APICall(3184563006784197677)
+ackSuperkuAddMeToPlanetLeaderboard at frame 11573: cCountryCode(JP) -> area(9), 
+    upload timestamp(243843921) to leaderboard()...
+ackSuperkuUploadHighscoreWDetails(planetAreasCombined) called at frame 11573(OK)
+ M U S I C (7): minCount(0) -> new cooldown(60)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 22070
+calling playerSavePosition from playerMove at frame 22070, request(0,1)
+xXx: calling playerSavePosition() at frame 22070, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,36356) at frame 22070: pick buffer idx(8): (0DC0D808, 4148, 15304) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(36356/ 36356) cloudSaveAsyncStart(1,0.25)
+ >> ackSuperkuDLLUpdateReceive at frame 22071: OnFileWriteAsyncCompleted: slot(2) file(rog) mode(0) Result(1) APICall(6179685506441873855)
+ >> ackSuperkuDLLUpdateReceive at frame 28395: User joined game lobby!
+ >> ackSuperkuDLLUpdateReceive at frame 32614: User left game lobby!
+ackSuperDLLPacketReceive() at frame 32614: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 35415
+calling playerSavePosition from playerMove at frame 35415, request(0,1)
+xXx: calling playerSavePosition() at frame 35415, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,40380) at frame 35415: pick buffer idx(9): (4F8F59D8, 8172, 28470) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(40380/ 40380) cloudSaveAsyncStart(1,0.31)
+ >> ackSuperkuDLLUpdateReceive at frame 35417: OnFileWriteAsyncCompleted: slot(3) file(rog) mode(0) Result(1) APICall(14382492697262144291)
+ >> ackSuperkuDLLUpdateReceive at frame 42733: User left game lobby!
+ackSuperDLLPacketReceive() at frame 42733: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+ >> ackSuperkuDLLUpdateReceive at frame 45907: User left game lobby!
+ackSuperDLLPacketReceive() at frame 45907: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 48626
+calling playerSavePosition from playerMove at frame 48626, request(0,1)
+xXx: calling playerSavePosition() at frame 48626, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,44412) at frame 48626: pick buffer idx(10): (4F9ACA60, 12196, 41929) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(44412/ 44412) cloudSaveAsyncStart(1,0.27)
+ >> ackSuperkuDLLUpdateReceive at frame 48628: OnFileWriteAsyncCompleted: slot(4) file(rog) mode(0) Result(1) APICall(13011210452793781013)
+ >> ackSuperkuDLLUpdateReceive at frame 53461: User joined game lobby!
+ M U S I C (29): minCount(0) -> new cooldown(60)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 61959
+calling playerSavePosition from playerMove at frame 61959, request(0,1)
+xXx: calling playerSavePosition() at frame 61959, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,48436) at frame 61959: pick buffer idx(11): (4F9B3A20, 16228, 55387) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(48436/ 48436) cloudSaveAsyncStart(1,0.28)
+ >> ackSuperkuDLLUpdateReceive at frame 61960: OnFileWriteAsyncCompleted: slot(5) file(rog) mode(0) Result(1) APICall(7682374193882439295)
+ >> ackSuperkuDLLUpdateReceive at frame 63068: User left game lobby!
+ackSuperDLLPacketReceive() at frame 63068: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+ >> ackSuperkuDLLUpdateReceive at frame 64853: User left game lobby!
+ackSuperDLLPacketReceive() at frame 64853: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+ >> ackSuperkuDLLUpdateReceive at frame 65537: User joined game lobby!
+ >> ackSuperkuDLLUpdateReceive at frame 72664: User joined game lobby!
+ >> ackSuperkuDLLUpdateReceive at frame 73790: User joined game lobby!
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 75279
+calling playerSavePosition from playerMove at frame 75279, request(0,1)
+xXx: calling playerSavePosition() at frame 75279, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,52460) at frame 75279: pick buffer idx(12): (4F8799E0, 20252, 68761) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(52460/ 52460) cloudSaveAsyncStart(1,0.29)
+ >> ackSuperkuDLLUpdateReceive at frame 75280: OnFileWriteAsyncCompleted: slot(6) file(rog) mode(0) Result(1) APICall(13439231706094596360)
+ >> ackSuperkuDLLUpdateReceive at frame 77423: User joined game lobby!
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 88572
+calling playerSavePosition from playerMove at frame 88572, request(0,1)
+xXx: calling playerSavePosition() at frame 88572, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,56484) at frame 88572: pick buffer idx(13): (4F87E908, 24276, 82171) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(56484/ 56484) cloudSaveAsyncStart(1,0.39)
+ >> ackSuperkuDLLUpdateReceive at frame 88573: OnFileWriteAsyncCompleted: slot(7) file(rog) mode(0) Result(1) APICall(14871936625768771503)
+ >> ackSuperkuDLLUpdateReceive at frame 89698: User left game lobby!
+ackSuperDLLPacketReceive() at frame 89698: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 1890
+calling playerSavePosition from playerMove at frame 1890, request(0,1)
+xXx: calling playerSavePosition() at frame 1890, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,60516) at frame 1890: pick buffer idx(14): (4F886260, 28300, 95425) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(60516/ 60516) cloudSaveAsyncStart(1,0.32)
+ >> ackSuperkuDLLUpdateReceive at frame 1891: OnFileWriteAsyncCompleted: slot(0) file(rog) mode(0) Result(1) APICall(15151967514054053672)
+ level up at frame 3517: from level(181) because 18200 >= 18200 (total 1647100)
+playerExpUnlockStuff(newLevel 182)
+ <><> UPLOAD: calling menuUploadStats(steamStatsDirtyNeedUpload 0) at frame 3517, time: 05:32:01
+kuSaveBufferGet(0,74) at frame 3517: pick buffer idx(2): (00000000, 0, 0)
+ menuSaveBackupStats(async 1) at frame 3517: cloudSaveResult(1)
+menuSetSteamStats at frame 3517 (level 182)
+ >> ackSuperkuDLLUpdateReceive at frame 3517: calling UploadStats from ackSuperkuUploadStats() now~~~
+ >> ackSuperkuDLLUpdateReceive at frame 3517: calling StoreStats() in UploadStats! RESULT: 
+ >> ackSuperkuDLLUpdateReceive at frame 3517: (1)
+ >> ackSuperkuDLLUpdateReceive at frame 3518: OnFileWriteAsyncCompleted: slot(1) file(stats) mode(0) Result(1) APICall(11726709607042385570)
+ >> ackSuperkuDLLUpdateReceive at frame 3558: OnUserStatsStored(Game 1, Ok 1)
+ M U S I C (28): minCount(0) -> new cooldown(60)
+ >> ackSuperkuDLLUpdateReceive at frame 9462: User joined game lobby!
+ >> ackSuperkuDLLUpdateReceive at frame 11263: User left game lobby!
+ackSuperDLLPacketReceive() at frame 11263: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 14840
+calling playerSavePosition from playerMove at frame 14840, request(0,1)
+xXx: calling playerSavePosition() at frame 14840, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,64532) at frame 14840: pick buffer idx(15): (4F8938B8, 32332, 8730) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(64532/ 64532) cloudSaveAsyncStart(1,0.54)
+ >> ackSuperkuDLLUpdateReceive at frame 14841: OnFileWriteAsyncCompleted: slot(2) file(rog) mode(0) Result(1) APICall(17244517372542898485)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 27886
+calling playerSavePosition from playerMove at frame 27886, request(0,1)
+xXx: calling playerSavePosition() at frame 27886, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,68556) at frame 27886: pick buffer idx(8): (4F89B710, 36356, 22070) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(68556/ 68556) cloudSaveAsyncStart(1,0.33)
+ >> ackSuperkuDLLUpdateReceive at frame 27888: OnFileWriteAsyncCompleted: slot(3) file(rog) mode(0) Result(1) APICall(4134997570638159041)
+ M U S I C (2): minCount(0) -> new cooldown(60)
+instr3.mkf: size(4708), fileBuffer(10928D34) ->numFrames(168)
+ >> ackSuperkuDLLUpdateReceive at frame 30676: User left game lobby!
+ackSuperDLLPacketReceive() at frame 30676: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+ackSuperkuAddMeToPlanetLeaderboard at frame 37660: cCountryCode(JP) -> area(9), 
+    upload timestamp(243844525) to leaderboard()...
+ackSuperkuUploadHighscoreWDetails(planetAreasCombined) called at frame 37660(OK)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 40821
+calling playerSavePosition from playerMove at frame 40821, request(0,1)
+xXx: calling playerSavePosition() at frame 40821, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,72580) at frame 40821: pick buffer idx(9): (4F8A8530, 40380, 35415) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(72580/ 72580) cloudSaveAsyncStart(1,0.41)
+ >> ackSuperkuDLLUpdateReceive at frame 40823: OnFileWriteAsyncCompleted: slot(4) file(rog) mode(0) Result(1) APICall(3547510517712723490)
+ M U S I C (17): minCount(0) -> new cooldown(60)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 53861
+calling playerSavePosition from playerMove at frame 53861, request(0,1)
+xXx: calling playerSavePosition() at frame 53861, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,76604) at frame 53861: pick buffer idx(10): (4F8B22F8, 44412, 48626) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(76604/ 76604) cloudSaveAsyncStart(1,0.37)
+ >> ackSuperkuDLLUpdateReceive at frame 53863: OnFileWriteAsyncCompleted: slot(5) file(rog) mode(0) Result(1) APICall(4979770137795981860)
+ >> ackSuperkuDLLUpdateReceive at frame 57300: User left game lobby!
+ackSuperDLLPacketReceive() at frame 57300: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+ >> ackSuperkuDLLUpdateReceive at frame 59807: User joined game lobby!
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 66816
+calling playerSavePosition from playerMove at frame 66816, request(0,1)
+xXx: calling playerSavePosition() at frame 66816, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,80628) at frame 66816: pick buffer idx(11): (4F8C1090, 48436, 61959) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(80628/ 80628) cloudSaveAsyncStart(1,0.42)
+ >> ackSuperkuDLLUpdateReceive at frame 66818: OnFileWriteAsyncCompleted: slot(6) file(rog) mode(0) Result(1) APICall(1038088914823678883)
+ >> ackSuperkuDLLUpdateReceive at frame 72507: User left game lobby!
+ackSuperDLLPacketReceive() at frame 72507: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 79919
+calling playerSavePosition from playerMove at frame 79919, request(0,1)
+xXx: calling playerSavePosition() at frame 79919, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,84652) at frame 79919: pick buffer idx(12): (4F8D0DE0, 52460, 75279) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(84652/ 84652) cloudSaveAsyncStart(1,0.37)
+ >> ackSuperkuDLLUpdateReceive at frame 79921: OnFileWriteAsyncCompleted: slot(7) file(rog) mode(0) Result(1) APICall(15669241188024068590)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 92906
+calling playerSavePosition from playerMove at frame 92906, request(0,1)
+xXx: calling playerSavePosition() at frame 92906, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,88676) at frame 92906: pick buffer idx(13): (4F8DDAD8, 56484, 88572) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(88676/ 88676) cloudSaveAsyncStart(1,0.38)
+ >> ackSuperkuDLLUpdateReceive at frame 92907: OnFileWriteAsyncCompleted: slot(0) file(rog) mode(0) Result(1) APICall(1387680087843088204)
+ >> ackSuperkuDLLUpdateReceive at frame 95944: User left game lobby!
+ackSuperDLLPacketReceive() at frame 95944: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+ >> ackSuperkuDLLUpdateReceive at frame 97162: User joined game lobby!
+ >> ackSuperkuDLLUpdateReceive at frame 99939: User joined game lobby!
+ M U S I C (6): minCount(0) -> new cooldown(60)
+ >> ackSuperkuDLLUpdateReceive at frame 1493: User left game lobby!
+ackSuperDLLPacketReceive() at frame 1493: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+ >> ackSuperkuDLLUpdateReceive at frame 3341: User joined game lobby!
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 5998
+calling playerSavePosition from playerMove at frame 5998, request(0,1)
+xXx: calling playerSavePosition() at frame 5998, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,92692) at frame 5998: pick buffer idx(14): (4F87D9F0, 60516, 1890) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(92692/ 92692) cloudSaveAsyncStart(1,0.46)
+ >> ackSuperkuDLLUpdateReceive at frame 6000: OnFileWriteAsyncCompleted: slot(1) file(rog) mode(0) Result(1) APICall(4193491207444001094)
+ >> ackSuperkuDLLUpdateReceive at frame 10617: User left game lobby!
+ackSuperDLLPacketReceive() at frame 10617: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+ >> ackSuperkuDLLUpdateReceive at frame 11064: User left game lobby!
+ackSuperDLLPacketReceive() at frame 11064: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 18993
+calling playerSavePosition from playerMove at frame 18993, request(0,1)
+xXx: calling playerSavePosition() at frame 18993, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,96716) at frame 18993: pick buffer idx(15): (4F931A70, 64532, 14840) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(96716/ 96716) cloudSaveAsyncStart(1,0.44)
+ >> ackSuperkuDLLUpdateReceive at frame 18994: OnFileWriteAsyncCompleted: slot(2) file(rog) mode(0) Result(1) APICall(3817888550028236553)
+ >> ackSuperkuDLLUpdateReceive at frame 19816: User joined game lobby!
+ >> ackSuperkuDLLUpdateReceive at frame 20550: User left game lobby!
+ackSuperDLLPacketReceive() at frame 20550: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+ >> ackSuperkuDLLUpdateReceive at frame 25153: User joined game lobby!
+ >> ackSuperkuDLLUpdateReceive at frame 29690: User joined game lobby!
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 32060
+calling playerSavePosition from playerMove at frame 32060, request(0,1)
+xXx: calling playerSavePosition() at frame 32060, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,100740) at frame 32060: pick buffer idx(8): (4F8938B8, 68556, 27886) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(100740/ 100740) cloudSaveAsyncStart(1,0.44)
+ >> ackSuperkuDLLUpdateReceive at frame 32061: OnFileWriteAsyncCompleted: slot(3) file(rog) mode(0) Result(1) APICall(388341309692068289)
+ >> ackSuperkuDLLUpdateReceive at frame 35642: User left game lobby!
+ackSuperDLLPacketReceive() at frame 35642: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+ M U S I C (20): minCount(0) -> new cooldown(60)
+ >> ackSuperkuDLLUpdateReceive at frame 43690: User joined game lobby!
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 45128
+calling playerSavePosition from playerMove at frame 45128, request(0,1)
+xXx: calling playerSavePosition() at frame 45128, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,104764) at frame 45128: pick buffer idx(9): (4F941690, 72580, 40821) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(104764/ 104764) cloudSaveAsyncStart(1,0.51)
+ >> ackSuperkuDLLUpdateReceive at frame 45129: OnFileWriteAsyncCompleted: slot(4) file(rog) mode(0) Result(1) APICall(9314179844425751451)
+ >> ackSuperkuDLLUpdateReceive at frame 50778: User joined game lobby!
+ >> ackSuperkuDLLUpdateReceive at frame 51596: User left game lobby!
+ackSuperDLLPacketReceive() at frame 51596: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+ >> ackSuperkuDLLUpdateReceive at frame 57279: User joined game lobby!
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 58139
+calling playerSavePosition from playerMove at frame 58139, request(0,1)
+xXx: calling playerSavePosition() at frame 58139, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,108788) at frame 58139: pick buffer idx(10): (4F8A8530, 76604, 53861) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(108788/ 108788) cloudSaveAsyncStart(1,0.47)
+ >> ackSuperkuDLLUpdateReceive at frame 58140: OnFileWriteAsyncCompleted: slot(5) file(rog) mode(0) Result(1) APICall(3232039533781394737)
+ M U S I C (16): minCount(0) -> new cooldown(60)
+ackSuperkuAddMeToPlanetLeaderboard at frame 62149: cCountryCode(JP) -> area(9), 
+    upload timestamp(243845125) to leaderboard()...
+ackSuperkuUploadHighscoreWDetails(planetAreasCombined) called at frame 62149(OK)
+ >> ackSuperkuDLLUpdateReceive at frame 62968: User joined game lobby!
+ >> ackSuperkuDLLUpdateReceive at frame 65345: User left game lobby!
+ackSuperDLLPacketReceive() at frame 65345: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 71582
+calling playerSavePosition from playerMove at frame 71582, request(0,1)
+xXx: calling playerSavePosition() at frame 71582, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,112804) at frame 71582: pick buffer idx(11): (4F953220, 80628, 66816) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(112804/ 112804) cloudSaveAsyncStart(1,0.51)
+ >> ackSuperkuDLLUpdateReceive at frame 71584: OnFileWriteAsyncCompleted: slot(6) file(rog) mode(0) Result(1) APICall(9322341949788153776)
+ >> ackSuperkuDLLUpdateReceive at frame 73409: User left game lobby!
+ackSuperDLLPacketReceive() at frame 73409: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+ >> ackSuperkuDLLUpdateReceive at frame 75173: User joined game lobby!
+ >> ackSuperkuDLLUpdateReceive at frame 76918: User left game lobby!
+ackSuperDLLPacketReceive() at frame 76918: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 84857
+calling playerSavePosition from playerMove at frame 84857, request(0,1)
+xXx: calling playerSavePosition() at frame 84857, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,116828) at frame 84857: pick buffer idx(12): (4F966D20, 84652, 79919) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(116828/ 116828) cloudSaveAsyncStart(1,0.54)
+ >> ackSuperkuDLLUpdateReceive at frame 84859: OnFileWriteAsyncCompleted: slot(7) file(rog) mode(0) Result(1) APICall(15739877905702608684)
+ >> ackSuperkuDLLUpdateReceive at frame 96350: User joined game lobby!
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 98088
+calling playerSavePosition from playerMove at frame 98088, request(0,1)
+xXx: calling playerSavePosition() at frame 98088, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,120852) at frame 98088: pick buffer idx(13): (4F8D0DE0, 88676, 92906) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(120852/ 120852) cloudSaveAsyncStart(1,0.53)
+ >> ackSuperkuDLLUpdateReceive at frame 98089: OnFileWriteAsyncCompleted: slot(0) file(rog) mode(0) Result(1) APICall(11756725062006877006)
+ >> ackSuperkuDLLUpdateReceive at frame 4613: User joined game lobby!
+ackSuperDLLPacketReceive() at frame 6761: NETWORK_TYPE_RUNTIMELAST(time 1796)
+ >> ackSuperkuDLLUpdateReceive at frame 7369: User left game lobby!
+ackSuperDLLPacketReceive() at frame 7369: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 11428
+calling playerSavePosition from playerMove at frame 11428, request(0,1)
+xXx: calling playerSavePosition() at frame 11428, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,124876) at frame 11428: pick buffer idx(14): (4F97B7D8, 92692, 5998) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(124876/ 124876) cloudSaveAsyncStart(1,0.53)
+ >> ackSuperkuDLLUpdateReceive at frame 11429: OnFileWriteAsyncCompleted: slot(1) file(rog) mode(0) Result(1) APICall(14951973353483190303)
+ playerRunFinish at frame 12275 | runState(1) m(0)
+playerRunFinish at frame 12275:  requestProgressUploadTime(1950879) <? bestTime(726781) replayRecordActive(1) numFinishes(13) skipless(0) isConnectedToSteamServers(1)
+ <><> UPLOAD: calling menuUploadStats(steamStatsDirtyNeedUpload 0) at frame 12275, time: 05:49:01
+kuSaveBufferGet(0,74) at frame 12275: pick buffer idx(3): (00000000, 0, 0)
+ menuSaveBackupStats(async 1) at frame 12275: cloudSaveResult(1)
+menuSetSteamStats at frame 12275 (level 182)
+ >> ackSuperkuDLLUpdateReceive at frame 12275: calling UploadStats from ackSuperkuUploadStats() now~~~
+ >> ackSuperkuDLLUpdateReceive at frame 12275: calling StoreStats() in UploadStats! RESULT: 
+ >> ackSuperkuDLLUpdateReceive at frame 12275: (1)
+ enc_do at frame 12275: START, 
+kuSaveBufferGet(0,12747) at frame 12275: pick buffer idx(4): (00000000, 0, 0)
+Save settings.txt via SteamFileWriteAsync at frame 12275: cloudSaveAsyncStart(1), size(12747)
+replaySave(1950879, newRecord 0, sk 0, mode 0) at frame 12275: replayRecordActive(1) numStepCurrent(15607)
+kuSaveBufferGet(0,124972) at frame 12275: pick buffer idx(5): (00000000, 0, 0) | async saving replay(map1last.replay) -> (1950879)... 
+ MASTERY at frame 12275: 61 19 182 ~> mastery(77.2)
+playerSaveDelete at frame 12275: cloudDeleteResult(1) - A
+uploadCurrentStateToFriendInfoLeaderboard() at frame 12275: mode(2) progress(0.00), time(1950879)
+ackSuperkuCombineTimeAndProgress(1950879, 0.00) at frame 12275
+uploadCurrentStateToFriendInfoLeaderboard() at frame 12275: UPLOAD: prevMainTimeScore(1000000000) > score(1950879) lb(mainTime)
+ackSuperkuUploadHighscoreWDetails(mainTime) called at frame 12275
+ackSuperkuUploadHighscoreWDetails(friendInfo) called at frame 12275
+ >> ackSuperkuDLLUpdateReceive at frame 12276: OnFileWriteAsyncCompleted: slot(2) file(stats) mode(0) Result(1) APICall(5468568127485946208)
+ >> ackSuperkuDLLUpdateReceive at frame 12276: OnFileWriteAsyncCompleted: slot(3) file(settings.txt) mode(1) Result(1) APICall(2533306085087754887)
+ >> ackSuperkuDLLUpdateReceive at frame 12276: OnFileWriteAsyncCompleted: slot(4) file(map1last.replay) mode(0) Result(1) APICall(12069944023144445976)
+ >> ackSuperkuDLLUpdateReceive at frame 12319: OnUserStatsStored(Game 1, Ok 1)
+ackSuperkuUploadMainTimeTaskEvent(mainTime,1) at frame 12319
+ackSuperkuUploadFriendInfoTaskEvent(friendInfo,1) at frame 12361 <- this event starts a new friendInfo download event 
+ >> ackSuperkuDLLUpdateReceive at frame 12837: P2P::LeaveLobby: mode = 0, level key value: ro_main2, isValid(1)
+ ackSuperkuGetStateFromLiteC(9, 00000000) at frame 12837 | exam(0)
+ networkDungeonCoopReset at frame 12837
+ total_ticks_reset at frame 12837
+levelReset(1) - START at frame 1 | level_requested(1) - it's a cutscene dummy level(1)
+levelLoadSimple(outro.wmb) - START at frame 1
+levelClear(0) - START at frame 1
+playerDataClear at frame 1
+menu_item_function_clear_replays at frame 1, eventData(0), pvar(00000000)
+ executing skateClear at frame 1
+ menuPlanetClear() at frame 1, menuPlanetEnt(00000000) [
+levelClear - END
+ >> ackSuperkuDLLUpdateReceive at frame 1: P2P::LeaveLobby: mode = 0, level key value: ro_main2, isValid(0)
+ networkDungeonCoopReset at frame 1
+ total_ticks_reset at frame 1
+LevelInit at 2051.618
+25 entities 1 cameras 0 lights 0 sounds 1 paths
+ 1 lmaps 0 textures...ok
+LevelReady at 2051.771
+ on_level_load_event at frame 5 | level_load_do_pp(0) | 1088CBBC | KAT (and level load event) done
+levelLoadSimple - END at frame 6
+ ~~~ PLAYER ENT CREATE AT FRAME 6, outroPlaying(1), level_current(1)
+ playerReset() at frame 6: playerLocalDead(0) dontResetTime(0) map3IsAGo(0)
+ reset map3RoutesTaken at frame 6
+kuAutoTextureUpdateBmpPointer() at frame 7: 
+ >> ackSuperkuDLLUpdateReceive at frame 3812: P2P::LeaveLobby: mode = 0, level key value: ro_main2, isValid(0)
+ networkDungeonCoopReset at frame 3812
+ total_ticks_reset at frame 3812
+levelReset(3) - START at frame 1 | level_requested(3) - it's a cutscene dummy level(3)
+levelLoadSimple(credits.wmb) - START at frame 1
+levelClear(0) - START at frame 1
+playerDataClear at frame 1
+menu_item_function_clear_replays at frame 1, eventData(0), pvar(00000000)
+ executing skateClear at frame 1
+ menuPlanetClear() at frame 1, menuPlanetEnt(00000000) [
+levelClear - END
+ >> ackSuperkuDLLUpdateReceive at frame 1: P2P::LeaveLobby: mode = 0, level key value: ro_main2, isValid(0)
+ networkDungeonCoopReset at frame 1
+ total_ticks_reset at frame 1
+LevelInit at 2083.376
+1 entities 0 cameras 0 lights 0 sounds 0 paths
+ 1 lmaps 0 textures...ok
+LevelReady at 2083.393
+ on_level_load_event at frame 3 | level_load_do_pp(0) | 10884B1C | KAT (and level load event) done
+txt_loadwFromFile(credits_en.txt) at frame 4, kuWRSFileLoad size(5572)
+levelLoadSimple - END at frame 4
+kuAutoTextureUpdateBmpPointer() at frame 5: 
+ ~~~~~~ open menu frame 700 | menuActive(0) | hideStateMenu(0) hideState(0)
+ inputSetAllKeysToPressed at frame 700:
+ OPEN menu at frame 700 (101) m(0) ls(0) 2(0)
+ ~~~~~~ open menu frame 3127 | menuActive(0) | hideStateMenu(0) hideState(0)
+ inputSetAllKeysToPressed at frame 3127:
+ OPEN menu at frame 3127 (101) m(0) ls(0) 2(0)
+menu_item_function_default: menu_close() C at frame 3216
+ >> ackSuperkuDLLUpdateReceive at frame 3798: P2P::LeaveLobby: mode = 0, level key value: ro_main2, isValid(0)
+ networkDungeonCoopReset at frame 3798
+ total_ticks_reset at frame 3798
+levelReset(2) - START at frame 1 | level_requested(2) - it's a cutscene dummy level(2)
+levelLoadSimple(secretOutro.wmb) - START at frame 1
+levelClear(0) - START at frame 1
+playerDataClear at frame 1
+menu_item_function_clear_replays at frame 1, eventData(0), pvar(00000000)
+ executing skateClear at frame 1
+ menuPlanetClear() at frame 1, menuPlanetEnt(00000000) [
+levelClear - END
+ >> ackSuperkuDLLUpdateReceive at frame 1: P2P::LeaveLobby: mode = 0, level key value: ro_main2, isValid(0)
+ networkDungeonCoopReset at frame 1
+ total_ticks_reset at frame 1
+LevelInit at 2101.056
+52 entities 0 cameras 0 lights 0 sounds 2 paths
+ 1 lmaps 0 textures
+Action mushroomPlace_act undefined
+Action mushroomPlace_act undefined
+Action mushroomPlace_act undefined
+Action mushroomPlace_act undefined
+Action mushroomPlace_act undefined...ok
+LevelReady at 2101.255
+ on_level_load_event at frame 7 | level_load_do_pp(0) | 10895C70 | KAT (and level load event) done
+levelLoadSimple - END at frame 8
+kuAutoTextureUpdateBmpPointer() at frame 9: 
+ ~~~~~~ open menu frame 274 | menuActive(0) | hideStateMenu(0) hideState(0)
+ inputSetAllKeysToPressed at frame 274:
+ OPEN menu at frame 274 (101) m(0) ls(0) 2(0)
+ ~~~~~~ open menu frame 475 | menuActive(1) | hideStateMenu(1) hideState(1)
+levelLoadMenu - START at frame 721 (level_current -1)
+ networkDungeonCoopReset at frame 721
+ >> ackSuperkuDLLUpdateReceive at frame 721: P2P::LeaveLobby: mode = 0, level key value: ro_main2, isValid(0)
+levelClear(0) - START at frame 721
+playerDataClear at frame 721
+menu_item_function_clear_replays at frame 721, eventData(0), pvar(00000000)
+ executing skateClear at frame 721
+ menuPlanetClear() at frame 721, menuPlanetEnt(00000000) [
+levelClear - END
+LevelInit at 2104.650 0 lmaps 0 textures...ok
+LevelReady at 2104.657
+ on_level_load_event at frame 723 | level_load_do_pp(0) | 108845C0 | KAT (and level load event) done
+ menuPlanetInit at frame 724
+kuAutoTextureUpdateBmpPointer() at frame 725: 
+ackSuperkuDownloadPlanetTaskEvent(planetAreasCombined,1) at frame 790, ackSuperkuNumScores(100), currentTime(243845419), invalidAreaCounter(0)
+ inputSetAllKeysToPressed at frame 864:
+ inputSetAllKeysToPressed at frame 864:
+ OPEN menu at frame 864 (101) m(0) ls(0) 2(0)
+ MENU jikanda at frame 2683:
+ >> ackSuperkuDLLUpdateReceive at frame 3362: P2P::LeaveLobby: mode = 0, level key value: ro_main2, isValid(0)
+ networkDungeonCoopReset at frame 3362
+ total_ticks_reset at frame 3362
+levelReset(0) - START at frame 1 | level_requested(-2)
+levelClear(0) - START at frame 1
+playerDataClear at frame 1
+menu_item_function_clear_replays at frame 1, eventData(0), pvar(00000000)
+ executing skateClear at frame 1
+ menuPlanetClear() at frame 1, menuPlanetEnt(108875FC) [4F52E480,00000000,4F52E800,4F52EF80,00000000,4F52F060,00000000,00000000,00000000,4F52EFA0,]
+levelClear - END
+editorLevelLoad(main) - START at frame 1
+editorClearLevel at frame 1: listLength(80)...OK!
+editorLevelLoad() - level_load...
+LevelInit at 2131.389
+408 entities 0 cameras 0 lights 0 sounds 8 paths
+ 1 lmaps 1 textures 1 meshes 1 submeshes 12 faces...ok
+LevelReady at 2132.824
+ on_level_load_event at frame 33 | level_load_do_pp(1) | 1090D060 | KAT (and level load event) doneOK!
+editorLevelLoad at frame 34: BEFORE LOOP
+editorLevelLoad: file(main.pak), file_load -> size(9829), result(07376B99)
+editorLevelLoad at frame 34: LOOP START
+kuAutoTextureUpdateBmpPointer() at frame 35: 
+ FINISHED LOADING!... free file memory...OK!
+levelReset - END at frame 53
+ nightmodeSetFruitToRain at frame 53 (00000000, 00000000) | levelLoadActive(0) level_current(0)
+ ~~~ PLAYER ENT CREATE AT FRAME 53, outroPlaying(0), level_current(0)
+ playerReset() at frame 53: playerLocalDead(0) dontResetTime(0) map3IsAGo(0)
+ reset map3RoutesTaken at frame 53
+WOW: calling playerLoadPositionNew() at frame 53, doIntro(0) level(0) ~> cloudExists(0) cloudFilesize(124876) cloudTimestamp(1791665358) -> read result(0) load error: 0 <= 0, 124876
+ackSuperkuDownloadFriendInfoTaskEvent(friendInfo,1) at frame 54 - numScores(4) - leaderboardPos(3) grabbed highscore still -> -1
+ackSuperkuDrawLeaderboardToEntity(10885078) at frame 125, numUserPos(7) -> bp(1166BE10)... bmap_process OK  Draw ranking via text target_map feature...
+ >> ackSuperkuDLLUpdateReceive at frame 402: ackSuperkuUpdatePlayerArray ATTENTION: reconnectWanted(2) | lobbyTypes(0,0), findStatus(1), enteredStatus(-2000), badCounter(-32) lobbyLevelID(-1)currentLevel(-1) -> ro_main2
+ >> ackSuperkuDLLUpdateReceive at frame 402: P2P::LeaveLobby: mode = 0, level key value: ro_main2, isValid(0)
+ >> ackSuperkuDLLUpdateReceive at frame 402: FindLobbies: levelStr(ro_main2)
+ >> ackSuperkuDLLUpdateReceive at frame 440: OnLobbyMatchList: matching(4), lobbyNums(2,0,9,1,0)
+ >> ackSuperkuDLLUpdateReceive at frame 440: P2P::LeaveLobby: mode = 0, level key value: ro_main2, isValid(0)
+ >> ackSuperkuDLLUpdateReceive at frame 472: OnLobbyEntered - CALLRESULT: ChatRoomResponse = 1
+ >> ackSuperkuDLLUpdateReceive at frame 507: getOrSetPlayerID: player(76561190000000001, 1000000001, 17825793) put into slot 1
+ ~~~~~~ open menu frame 611 | menuActive(0) | hideStateMenu(0) hideState(0)
+ inputSetAllKeysToPressed at frame 611:
+ OPEN menu at frame 611 (101) m(0) ls(0) 2(0)
+calling playerSavePosition from playerMove at frame 611, request(43,1)
+xXx: calling playerSavePosition() at frame 611, replayRecordActive(0), runActive(-1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,264) at frame 611: pick buffer idx(15): (4F9921F8, 96716, 18993) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(264/ 264) cloudSaveAsyncStart(1,0.12)
+ >> ackSuperkuDLLUpdateReceive at frame 612: OnFileWriteAsyncCompleted: slot(5) file(rog) mode(0) Result(1) APICall(14096004641146067035)
+ackSuperDLLPacketReceive() at frame 2490: NETWORK_TYPE_RUNTIMELAST(time 333)
+ >> ackSuperkuDLLUpdateReceive at frame 2593: User left game lobby!
+ackSuperDLLPacketReceive() at frame 2593: NETWORK_TYPE_PLAYER_LEFT playerID(255)
+menu_item_function_default: menu_close() C at frame 4250 grabbed highscore still -> -1
+ackSuperkuDrawLeaderboardToEntity(10885078) at frame 7813, numUserPos(7) -> bp(1166BE10)... bmap_process OK  Draw ranking via text target_map feature...
+replayInit at frame 7957: replayKuLocal(4F803348) | h(0) b(0) statusFlags(0)
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 7960
+calling playerSavePosition from playerMove at frame 7960, request(0,1)
+xXx: calling playerSavePosition() at frame 7960, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,268) at frame 7960: pick buffer idx(8): (4F9B8758, 100740, 32060) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(268/ 268) cloudSaveAsyncStart(1,0.10)
+ >> ackSuperkuDLLUpdateReceive at frame 7962: OnFileWriteAsyncCompleted: slot(6) file(rog) mode(0) Result(1) APICall(4817621074070752421)
+ playerReset() at frame 12791: playerLocalDead(0) dontResetTime(0) map3IsAGo(0)
+ reset map3RoutesTaken at frame 12791
+playerSaveDelete at frame 12791: cloudDeleteResult(1) - A
+replayInit at frame 13085: replayKuLocal(4F803348) | h(0) b(0) statusFlags(0)
+ >> ackSuperkuDLLUpdateReceive at frame 21302: User joined game lobby!
+set playerSavePositionRequest to 1 in playerMove because of timer, at frame 21648
+calling playerSavePosition from playerMove at frame 21648, request(0,1)
+xXx: calling playerSavePosition() at frame 21648, replayRecordActive(1), runActive(1), saveOnExitNoASync(0), map(0)(0) | 
+kuSaveBufferGet(1,2820) at frame 21648: pick buffer idx(9): (4F931A70, 104764, 45128) monoFF(0, 0, 0) pgv(6360) A B ->pointerDiff(2820/ 2820) cloudSaveAsyncStart(1,0.13)
+ >> ackSuperkuDLLUpdateReceive at frame 21649: OnFileWriteAsyncCompleted: slot(7) file(rog) mode(0) Result(1) APICall(477638886475944558)
+ playerReset() at frame 26339: playerLocalDead(0) dontResetTime(1) map3IsAGo(0)

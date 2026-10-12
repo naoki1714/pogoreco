@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- 記録係: ゲームを遊んでいる間だけ動き、画面の HUD・ログ・セーブを記録する（画面なし） -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+    <AssemblyName>Pogoreco.Recorder</AssemblyName>
+    <RootNamespace>Pogoreco.Recorder</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- メモリを抑える（ゲームと同時に動くため） -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pogoreco.Platform\Pogoreco.Platform.csproj" />
+  </ItemGroup>
+</Project>

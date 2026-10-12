@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Pogoreco.App/Pogoreco.App.csproj" />
+    <Project Path="src/Pogoreco.Core/Pogoreco.Core.csproj" />
+    <Project Path="src/Pogoreco.Platform/Pogoreco.Platform.csproj" />
+    <Project Path="src/Pogoreco.Recorder/Pogoreco.Recorder.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Pogoreco.Core.Tests/Pogoreco.Core.Tests.csproj" />
+  </Folder>
+</Solution>

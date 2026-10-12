@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using Pogoreco.App.Charts;
 using Pogoreco.Core;
@@ -28,12 +28,8 @@ internal static class DashboardPage
         // 一番見たいのは現在のラン（経過時間と高さの推移）
         if (RunsPage.Items(d).FirstOrDefault() is { } current && current.Map is int currentMap)
         {
-            page.Children.Add(Ui.Row(
-                Ui.H2("現在のラン"),
-                Ui.Muted(Maps.MapName(currentMap)).WithMargin(new Thickness(8, 4, 0, 0)),
-                Ui.ChevronButton("ランで見る", () => nav.Push(n => RunsPage.Detail(n, current.Id), "ラン")).WithMargin(new Thickness(12, 0, 0, 0)))
-                .WithMargin(new Thickness(0, 0, 0, 8)));
-            page.Children.Add(RunsPage.ClimbCard(d, current, currentMap, compact: true));
+            page.Children.Add(RunsPage.ClimbCard(d, current, currentMap, compact: true,
+                onGo: () => nav.Push(n => RunsPage.Detail(n, current.Id), "ラン")));
         }
 
         var grid = new Grid();

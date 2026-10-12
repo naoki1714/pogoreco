@@ -210,7 +210,7 @@ internal static class Ui
     }
 
     /// <summary>グラフのカード。どのグラフにも同じ内容の表を用意し、切り替えられるようにする。</summary>
-    public static Border ChartCard(string title, string? desc, UIElement chart, Func<UIElement> table, UIElement? above = null)
+    public static Border ChartCard(string title, string? desc, UIElement chart, Func<UIElement> table, UIElement? above = null, UIElement? headerAction = null)
     {
         var content = new ContentControl { Content = chart };
         bool showingTable = false;
@@ -222,6 +222,14 @@ internal static class Ui
             toggle.Text = showingTable ? "グラフで見る" : "表で見る";
         };
         var header = new DockPanel { Margin = new Thickness(0, 0, 0, 10) };
+        // 右端に headerAction（> ボタンなど）、その左に「表で見る」
+        if (headerAction is not null)
+        {
+            DockPanel.SetDock(headerAction, Dock.Right);
+            header.Children.Add(headerAction);
+            toggle.Margin = new Thickness(0, 0, 10, 0);
+            toggle.VerticalAlignment = VerticalAlignment.Center;
+        }
         DockPanel.SetDock(toggle, Dock.Right);
         header.Children.Add(toggle);
         header.Children.Add(Row(H2(title), desc is null ? null : Muted(desc, 12).WithMargin(new Thickness(10, 4, 0, 0))));

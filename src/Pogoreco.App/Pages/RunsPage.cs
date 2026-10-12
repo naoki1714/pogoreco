@@ -207,7 +207,7 @@ internal static class RunsPage
     /// ランのカード（タイル＋高さのグラフ）。onChangeColorMode を渡すと「単色／時間で色分け／高さで色分け」の
     /// 切り替えを出す（ダッシュボードの「現在のラン」など、簡潔に見せたい場面では渡さない）。
     /// </summary>
-    internal static UIElement ClimbCard(AppData d, Item item, int map, ChartColorMode colorMode = ChartColorMode.None, Action<ChartColorMode>? onChangeColorMode = null, bool compact = false)
+    internal static UIElement ClimbCard(AppData d, Item item, int map, ChartColorMode colorMode = ChartColorMode.None, Action<ChartColorMode>? onChangeColorMode = null, bool compact = false, Action? onGo = null)
     {
         var series = HeightTimeline.Build(item.Climb, item.Hud);
         var segments = HeightTimeline.FindSegments(item.Climb, d.Sessions);
@@ -281,6 +281,8 @@ internal static class RunsPage
             ClimbStatus.Reset => "リセットしたラン",
             _ => "画面から記録したラン",
         };
+        // ダッシュボードでは、他のカードと並べるので見出しは「ラン」だけにし、> ボタンを右端に置く
+        if (compact) title = "ラン";
         // 表にも区間・エリア名を出す（色は背景とのコントラストが低い色もあるため、色だけに頼らず表・ホバーでも分かるようにする）
         string? SegmentNameAt(double x)
         {
@@ -294,7 +296,7 @@ internal static class RunsPage
             foreach (var (value, n) in areaNames) { if (value <= y) name = n; else break; }
             return name;
         }
-        var card = Ui.ChartCard(title, "ラン開始からの経過時間（プレイしていた時間）と高さ", chart,
+        var card = Ui.ChartCard(title, compact ? $"{Maps.MapName(map)} ・ ラン開始からの経過時間と高さ" : "ラン開始からの経過時間（プレイしていた時間）と高さ", chart,
             () => segmentNames.Count == 0
                 ? Ui.Table(["ラン時間", "高さ"],
                     series.Points.Where((_, i) => i % Math.Max(1, series.Points.Count / 60) == 0)
@@ -304,7 +306,8 @@ internal static class RunsPage
                     series.Points.Where((_, i) => i % Math.Max(1, series.Points.Count / 60) == 0)
                         .Select(p => (new[] { Fmt.Elapsed(p.X), Shared.Height(p.Y, series.Unit), SegmentNameAt(p.X) ?? "", AreaNameAt(p.Y) ?? "" }, (Action?)null)),
                     [true, true, false, false]),
-            above: Ui.Stack(tiles, notes).WithMargin(new Thickness(0, 0, 0, 12)));
+            above: Ui.Stack(tiles, notes).WithMargin(new Thickness(0, 0, 0, 12)),
+            headerAction: onGo is null ? null : Ui.ChevronButton("ランで見る", onGo));
 
         if (compact) return card;
         var stack = Ui.Stack(card);

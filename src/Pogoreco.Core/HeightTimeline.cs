@@ -28,7 +28,7 @@ public static class HeightTimeline
     /// </summary>
     public static List<HudRun> SplitRuns(IEnumerable<HudSample> samples)
     {
-        var ordered = FillMissingClock(DropTimeOutliers(samples.OrderBy(s => s.At).ToList()));
+        var ordered = FillMissingClock(DropTimeOutliers(RepairDroppedDigits(samples.OrderBy(s => s.At).ToList())));
         var runs = new List<HudRun>();
         var current = new List<HudSample>();
         HudSample? prev = null;
@@ -50,7 +50,7 @@ public static class HeightTimeline
             if (s.RunTimeSec is null) continue;
 
             // 巻き戻ったかは、実際に読めたタイムとだけ比べる（ポーズ中はタイムが止まるので、補った値は実際より進んでいることがある）
-            var wentBack = !filled && !clockChanged && lastRead?.RunTimeSec is double pt && s.RunTimeSec < pt - 5;
+            var wentBack = !filled && !clockChanged && lastRead?.RunTimeSec is double pt && s.RunTimeSec < pt - 20; // 数秒の読み違い（1 と 8 の取り違えなど）は巻き戻りとしない
             if (wentBack && !ConfirmsReset(ordered, i, s)) continue;
 
             var startsNew = prev is not null && (
@@ -98,6 +98,38 @@ public static class HeightTimeline
                 result[i] = s with { RunTimeSec = (s.At - zeroAt.Value) / 1000.0, ClockEstimated = true };
             }
             lastAt = s.At;
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// OCR が「34h 22m」の先頭の 1 桁を落として「4h 22m」と読む（時間の十の位が消える）ことがある。
+    /// 1 回ではなく何十分も続くことがあり、そのまま使うと「4〜5 時間のラン」という存在しない記録ができてしまう。
+    /// 直前の（正しいとした）ラン時間から実時間ぶんだけ進んだ範囲に入らない値は、十の位（10 時間 × 1〜9）を足した値が
+    /// その範囲に入るなら、その値に直す。どちらも合わない値（本当のリセットなど）は触らない。
+    /// ラン時間が 1 時間未満の値は、リセット直後の本物の値と区別できないので直さない。
+    /// </summary>
+    internal static List<HudSample> RepairDroppedDigits(List<HudSample> ordered)
+    {
+        const double Tick = 36_000; // 10 時間
+        var result = new List<HudSample>(ordered);
+        HudSample? anchor = null; // 正しいとしたサンプル（元の値か直した値）
+        for (var i = 0; i < result.Count; i++)
+        {
+            if (result[i].RunTimeSec is not double rt) continue;
+            if (anchor is null) { anchor = result[i]; continue; }
+            var elapsed = (result[i].At - anchor.At) / 1000.0;
+            bool Fits(double t) => t >= anchor.RunTimeSec!.Value - 30 && t <= anchor.RunTimeSec!.Value + elapsed + 30;
+            if (Fits(rt)) { anchor = result[i]; continue; }
+            if (rt < 3600) { anchor = result[i]; continue; } // リセット直後など（直さない）
+            for (var k = 1; k <= 9; k++)
+            {
+                if (!Fits(rt + k * Tick)) continue;
+                // 直した値は直前より前に戻さない（数秒の読み違いを、リセットで巻き戻ったと誤判定しないため）
+                result[i] = result[i] with { RunTimeSec = Math.Max(rt + k * Tick, anchor.RunTimeSec!.Value) };
+                anchor = result[i];
+                break;
+            }
         }
         return result;
     }
@@ -165,19 +197,25 @@ public static class HeightTimeline
     };
 
     /// <summary>
-    /// グラフに描く点。画面の記録（OCR）があれば、それだけを使う（記録のないところを軌跡で埋めたり、
-    /// 0 時間から描いたりしない）。画面の記録がまったく無いランだけ、セーブ・リプレイの軌跡を使う（換算できるマップのみ）。
+    /// グラフに描く点。ゲームが残すセーブ・リプレイの軌跡はラン開始から 3 時間まで（Capped）なので、
+    /// 3 時間以内のランは軌跡を使い、その後ろに画面の記録（OCR）をつなぐ。
+    /// 3 時間を超えたランは、0 時間から記録のない時間を埋めず、計測を始めてからの画面の記録だけを描く
+    /// （画面の記録がまったく無いときだけ軌跡）。換算できないマップ（Map 2 など）の軌跡は使わない。
     /// </summary>
     public static HeightSeries Build(ClimbRecord? climb, IReadOnlyList<HudRun> hud)
     {
         var map = climb?.Map ?? hud.FirstOrDefault()?.Map;
         var points = new List<(double X, double Y)>();
         string? unit = null;
-        if (climb is not null && climb.Heights.Count > 0 && !hud.Any(r => r.Samples.Count > 0))
+        var hasHud = hud.Any(r => r.Samples.Count > 0);
+        if (climb is not null && climb.Heights.Count > 0 && (!climb.Capped || !hasHud))
         {
             var probe = Maps.ToDisplay(map, climb.Heights[0]);
-            unit = probe.Unit;
-            for (int i = 0; i < climb.Heights.Count; i++) points.Add((i + 1, Maps.ToDisplay(map, climb.Heights[i]).Value));
+            if (probe.Unit != "" || !hasHud)
+            {
+                unit = probe.Unit;
+                for (int i = 0; i < climb.Heights.Count; i++) points.Add((i + 1, Maps.ToDisplay(map, climb.Heights[i]).Value));
+            }
         }
         var after = points.Count > 0 ? points[^1].X : double.NegativeInfinity;
         foreach (var s in hud.SelectMany(r => r.Samples).OrderBy(s => s.RunTimeSec))

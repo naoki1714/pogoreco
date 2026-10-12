@@ -39,6 +39,7 @@ public class HeightTimelineTests
     public void 一瞬だけ巻き戻ってすぐ元に戻るタイムは誤読として捨てる()
     {
         // 実データで見つかった例: 118851 → 10856（誤読）→ 118858 と、1 回だけ大きく巻き戻ってすぐ元の値に戻る
+        // （10856 は十の位が落ちた 118856 なので、直して使う）
         var runs = HeightTimeline.SplitRuns(
         [
             S(1000, 118850, 10, 10, "m", 8),
@@ -48,7 +49,7 @@ public class HeightTimelineTests
             S(15000, 118858, 13, 13, "m", 8), // 誤読の前の値からすぐ続く → 誤読と分かる
         ]);
         Assert.Single(runs);
-        Assert.Equal([118850.0, 118851, 118858], runs[0].Samples.Select(s => s.RunTimeSec!.Value));
+        Assert.Equal([118850.0, 118851, 118856, 118857, 118858], runs[0].Samples.Select(s => s.RunTimeSec!.Value));
     }
 
     [Fact]
@@ -72,13 +73,14 @@ public class HeightTimelineTests
         Assert.Equal([(int?)0, 8], runs.Select(r => r.Map));
     }
 
-    private static ClimbRecord Climb(ClimbStatus status, int map, double recordedSec, double? finish = null, long firstSeenAt = 0) => new()
+    private static ClimbRecord Climb(ClimbStatus status, int map, double recordedSec, double? finish = null, long firstSeenAt = 0, bool capped = false) => new()
     {
         Id = "c",
         Map = map,
         Sources = ["rog"],
         Status = status,
         FirstSeenAt = firstSeenAt,
+        Capped = capped,
         RecordedSec = recordedSec,
         FinishTimeSec = finish,
         Heights = [.. Enumerable.Range(0, (int)recordedSec).Select(i => 1719 + i * 10)],
@@ -141,13 +143,22 @@ public class HeightTimelineTests
     }
 
     [Fact]
-    public void 画面の記録があれば_軌跡は使わず画面の記録だけを描く()
+    public void 三時間以内のランは_軌跡の後ろに画面の記録をつなぐ()
     {
         var climb = Climb(ClimbStatus.InProgress, 0, 3);
         var hud = HeightTimeline.SplitRuns([S(1000, 2, 99, 99), S(2000, 4, 0.5, 1)]);
         var series = HeightTimeline.Build(climb, hud);
         Assert.Equal("%", series.Unit);
-        Assert.Equal([2.0, 4], series.Points.Select(p => p.X)); // 0 秒からは描かない
+        Assert.Equal([1.0, 2, 3, 4], series.Points.Select(p => p.X)); // 2 秒目の画面の値は軌跡と重なるので使わない
+    }
+
+    [Fact]
+    public void 三時間を超えたランは_軌跡を使わず計測を始めてからの画面の記録だけを描く()
+    {
+        var climb = Climb(ClimbStatus.InProgress, 0, 3, capped: true);
+        var hud = HeightTimeline.SplitRuns([S(1000, 2, 99, 99), S(2000, 4, 0.5, 1)]);
+        var series = HeightTimeline.Build(climb, hud);
+        Assert.Equal([2.0, 4], series.Points.Select(p => p.X)); // 0 時間からは描かない
     }
 
     [Fact]
@@ -188,6 +199,25 @@ public class HeightTimelineTests
         Assert.Single(down, p => double.IsNaN(p.Y));
         Assert.True(down.Count < 1500);
         Assert.Contains(down, p => p.X >= 10_000);
+    }
+
+    [Fact]
+    public void 時間の十の位が落ちて読まれた値は_何十分続いても元の値に直し_存在しないランを作らない()
+    {
+        var samples = new List<HudSample>();
+        for (var i = 0; i < 5; i++) samples.Add(S(1_000_000 + i * 1000L, 123_741 + i, 600, 700, "m", 8)); // 34h 22m
+        for (var i = 5; i < 2000; i++) samples.Add(S(1_000_000 + i * 1000L, 15_741 + i, 600, 700, "m", 8)); // 4h 22m と誤読（先頭の 3 が落ちた）
+        var run = Assert.Single(HeightTimeline.SplitRuns(samples));
+        Assert.All(run.Samples, s => Assert.InRange(s.RunTimeSec!.Value, 123_741, 123_741 + 2000));
+    }
+
+    [Fact]
+    public void リセット直後の小さいラン時間は_十の位が落ちたものとは見なさない()
+    {
+        var samples = new List<HudSample> { S(1000, 36_100, 50, 50, "m", 8), S(2000, 36_101, 50, 50, "m", 8), S(3000, 5, 0, 50, "m", 8), S(4000, 6, 0, 50, "m", 8), S(5000, 7, 0, 50, "m", 8) };
+        var runs = HeightTimeline.SplitRuns(samples);
+        Assert.Equal(2, runs.Count);
+        Assert.Equal(5, runs[1].Samples[0].RunTimeSec);
     }
 
     [Fact]

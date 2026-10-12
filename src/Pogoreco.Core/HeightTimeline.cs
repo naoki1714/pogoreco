@@ -28,7 +28,7 @@ public static class HeightTimeline
     /// </summary>
     public static List<HudRun> SplitRuns(IEnumerable<HudSample> samples)
     {
-        var ordered = DropTimeOutliers(samples.OrderBy(s => s.At).ToList());
+        var ordered = FillMissingClock(DropTimeOutliers(samples.OrderBy(s => s.At).ToList()));
         var runs = new List<HudRun>();
         var current = new List<HudSample>();
         HudSample? prev = null;
@@ -36,23 +36,26 @@ public static class HeightTimeline
         for (var i = 0; i < ordered.Count; i++)
         {
             var s = ordered[i];
-            if (s.RunTimeSec is double t && prev?.RunTimeSec is double prevOkTime
+            // 代わりの時計から読めたタイムに切り替わったときは、飛んだ値でも誤読とは扱わず、別のランにする
+            var clockChanged = prev is not null && s.RunTimeSec is not null && prev.ClockEstimated != s.ClockEstimated;
+            if (s.RunTimeSec is double t && prev?.RunTimeSec is double prevOkTime && !clockChanged
                 && t - prevOkTime > (s.At - prev.At) / 1000.0 + 30)
                 s = s with { RunTimeSec = null };
             var filled = false;
             if (s.RunTimeSec is null && prev?.RunTimeSec is double prevTime && s.At - prev.At < 5_000)
             {
-                s = s with { RunTimeSec = prevTime + (s.At - prev.At) / 1000.0 };
+                s = s with { RunTimeSec = prevTime + (s.At - prev.At) / 1000.0, ClockEstimated = prev.ClockEstimated };
                 filled = true;
             }
             if (s.RunTimeSec is null) continue;
 
             // 巻き戻ったかは、実際に読めたタイムとだけ比べる（ポーズ中はタイムが止まるので、補った値は実際より進んでいることがある）
-            var wentBack = !filled && lastRead?.RunTimeSec is double pt && s.RunTimeSec < pt - 5;
+            var wentBack = !filled && !clockChanged && lastRead?.RunTimeSec is double pt && s.RunTimeSec < pt - 5;
             if (wentBack && !ConfirmsReset(ordered, i, s)) continue;
 
             var startsNew = prev is not null && (
-                prev.Map != s.Map || prev.Unit != s.Unit || wentBack
+                prev.Map != s.Map || prev.Unit != s.Unit || wentBack || clockChanged
+                || (s.ClockEstimated && s.At - prev.At > 30 * 60_000)
                 || (s.At - prev.At > 30 * 60_000 && s.RunTimeSec > prev.RunTimeSec + (s.At - prev.At) / 1000.0 + 60));
             if (startsNew && current.Count > 0)
             {
@@ -68,35 +71,65 @@ public static class HeightTimeline
     }
 
     /// <summary>
+    /// タイムがまったく読めないとき（ゲームの設定でタイムの行を出していない、OCR が読めない、など）の代わりの時計を作る。
+    /// 前後 5 分以内にタイムが 1 回でも読めているところは、読めた値を使う（あとの処理が補う）ので触らない。
+    /// 5 分以内に 1 回も読めていないところは、「そこからの実時間」をタイムにする（グラフの横軸は、その記録の始まりからの経過時間）。
+    /// 間が 30 分以上空いたら、その時計は 0 からやり直す。代わりの時計の値には ClockEstimated を付ける。
+    /// </summary>
+    internal static List<HudSample> FillMissingClock(List<HudSample> ordered)
+    {
+        const long Near = 5 * 60_000;
+        var result = new List<HudSample>(ordered);
+        var readAt = ordered.Where(x => x.RunTimeSec is not null).Select(x => x.At).ToList();
+        bool NearRead(long at)
+        {
+            var k = readAt.BinarySearch(at);
+            if (k < 0) k = ~k;
+            return (k < readAt.Count && readAt[k] - at <= Near) || (k > 0 && at - readAt[k - 1] <= Near);
+        }
+        long? zeroAt = null;
+        long? lastAt = null;
+        for (var i = 0; i < result.Count; i++)
+        {
+            var s = result[i];
+            if (s.RunTimeSec is null && !NearRead(s.At))
+            {
+                if (zeroAt is null || s.At - lastAt!.Value >= 30 * 60_000) zeroAt = s.At;
+                result[i] = s with { RunTimeSec = (s.At - zeroAt.Value) / 1000.0, ClockEstimated = true };
+            }
+            lastAt = s.At;
+        }
+        return result;
+    }
+
+    /// <summary>
     /// OCR が数字を読み違えた「ラン時間」を、読めなかった扱い（null）にする。ラン時間は実時間と同じ速さで進むので、
-    /// 「ラン時間 − 実時間」は（ポーズやリセットのあとを除いて）一定のはず。前に 2 個以上・後ろに 2 個以上の読めたサンプル
-    /// （それぞれ最大 4 個、60 秒以内）があり、前後の値が互いに合っているのに、そのサンプルだけが 8 秒以上ずれていれば誤読とする
-    /// （例: 121648 を 13648 と読む）。ポーズ・リセットのあとはずれが続き、前後が合わないので、誤読にはならない。
+    /// 「ラン時間 − 実時間」（ずれ）は、ポーズやリセットのあとを除いて一定のはず。前後の読めたサンプル（それぞれ最大 6 個、
+    /// 60 秒以内）のうち、ずれが 8 秒以内でそろっている仲間が 3 個以上いる「まとまり」を探し、そのどれにも合わない値は誤読とする
+    /// （例: 121648 を 13648、119838 を 119821 と読む。誤読が 2〜3 個続いても、まわりの正しい値が多数なので見つけられる）。
+    /// ポーズ・リセットのあとは、ずれの新しい値が新しいまとまりになるので、誤読にはならない。
     /// </summary>
     internal static List<HudSample> DropTimeOutliers(List<HudSample> ordered)
     {
-        const int Neighbors = 4;
+        const int Neighbors = 6;
         const long WindowMs = 60_000;
         const double Tolerance = 8;
+        const int MinCluster = 3;
         var valid = Enumerable.Range(0, ordered.Count).Where(i => ordered[i].RunTimeSec is not null).ToList();
         double Offset(int i) => ordered[i].RunTimeSec!.Value - ordered[i].At / 1000.0;
-        static double Median(List<double> xs)
-        {
-            xs.Sort();
-            return xs.Count % 2 == 1 ? xs[xs.Count / 2] : (xs[xs.Count / 2 - 1] + xs[xs.Count / 2]) / 2;
-        }
         var result = new List<HudSample>(ordered);
         for (var v = 0; v < valid.Count; v++)
         {
             var i = valid[v];
-            List<double> Side(int from, int to) => [.. Enumerable.Range(Math.Max(0, from), Math.Max(0, Math.Min(valid.Count - 1, to) - Math.Max(0, from) + 1))
-                .Where(k => k != v && Math.Abs(ordered[valid[k]].At - ordered[i].At) <= WindowMs).Select(k => Offset(valid[k]))];
-            var before = Side(v - Neighbors, v - 1);
-            var after = Side(v + 1, v + Neighbors);
-            if (before.Count < 2 || after.Count < 2) continue;
-            var (medBefore, medAfter) = (Median(before), Median(after));
-            if (Math.Abs(medBefore - medAfter) > Tolerance) continue; // 前後が合わない = ポーズ・リセットなどで本当にずれた
-            if (Math.Abs(Offset(i) - (medBefore + medAfter) / 2) > Tolerance) result[i] = ordered[i] with { RunTimeSec = null };
+            var near = new List<double>();
+            for (var k = Math.Max(0, v - Neighbors); k <= Math.Min(valid.Count - 1, v + Neighbors); k++)
+                if (k != v && Math.Abs(ordered[valid[k]].At - ordered[i].At) <= WindowMs) near.Add(Offset(valid[k]));
+            if (near.Count < 5) continue;
+            // 仲間が MinCluster 個以上いる値（まとまりの一員）を集める。自分もそのどれかに合っていれば、誤読ではない
+            var supported = near.Where(o => near.Count(p => Math.Abs(p - o) <= Tolerance) >= MinCluster).ToList();
+            if (supported.Count == 0) continue;
+            var me = Offset(i);
+            if (!supported.Any(o => Math.Abs(me - o) <= Tolerance)) result[i] = ordered[i] with { RunTimeSec = null };
         }
         return result;
     }

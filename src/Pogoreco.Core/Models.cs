@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Pogoreco.Core;
 
 // 時刻はすべて epoch ミリ秒（long）。保存する JSON は camelCase（以前の TypeScript 版と同じ形）。
@@ -90,4 +92,7 @@ public sealed record HudSample
     public required string Unit { get; init; }
     /// <summary>そのときのマップ（ログから分かれば）</summary>
     public int? Map { get; init; }
+    /// <summary>タイムが読めないため、実時間から作った代わりの時計の値（保存はしない。集計のときだけ付く）</summary>
+    [JsonIgnore]
+    public bool ClockEstimated { get; init; }
 }

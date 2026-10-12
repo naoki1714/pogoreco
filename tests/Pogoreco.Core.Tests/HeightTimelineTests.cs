@@ -191,4 +191,46 @@ public class HeightTimelineTests
         for (var i = 13; i <= 20; i++) samples.Add(S(1_000_000 + i * 1000L, 119073, 700, 716, "m", 8));
         Assert.Single(HeightTimeline.SplitRuns(samples));
     }
+
+    [Fact]
+    public void タイムがまったく読めなくても_実時間を代わりの時計にして捨てない()
+    {
+        // タイムの行を出していない設定など: 高さだけが読める
+        var samples = Enumerable.Range(0, 30).Select(i => S(1_000_000 + i * 1000L, null, 600 + i, 700, "m", 8)).ToList();
+        var run = Assert.Single(HeightTimeline.SplitRuns(samples));
+        Assert.Equal(30, run.Samples.Count);
+        Assert.Equal(0, run.FirstRunTime);
+        Assert.Equal(29, run.LastRunTime);
+    }
+
+    [Fact]
+    public void 前後にタイムが読めているところは_代わりの時計を使わない()
+    {
+        var samples = new List<HudSample>
+        {
+            S(1_000_000, null, 10, 10, "m", 8), S(1_001_000, null, 11, 11, "m", 8), S(1_002_000, 5002, 12, 12, "m", 8), S(1_003_000, 5003, 13, 13, "m", 8),
+        };
+        var run = Assert.Single(HeightTimeline.SplitRuns(samples));
+        Assert.Equal([5002.0, 5003], run.Samples.Select(s => s.RunTimeSec!.Value)); // 先頭の 2 個はタイムが無いので捨てる（これまでどおり）
+        Assert.All(run.Samples, s => Assert.False(s.ClockEstimated));
+    }
+
+    [Fact]
+    public void 代わりの時計のあとにタイムが読めるようになったら_別のランにする()
+    {
+        var samples = Enumerable.Range(0, 400).Select(i => S(1_000_000 + i * 1000L, null, 600, 700, "m", 8)).ToList();
+        samples.AddRange(Enumerable.Range(0, 30).Select(i => S(1_000_000 + (400 + i) * 1000L, 90_000 + i, 600, 700, "m", 8)));
+        var runs = HeightTimeline.SplitRuns(samples);
+        Assert.Equal(2, runs.Count);
+        Assert.True(runs[0].Samples[0].ClockEstimated);
+        Assert.False(runs[1].Samples[0].ClockEstimated);
+    }
+
+    [Fact]
+    public void タイムが読めない記録が30分以上空いたら_別のランにする()
+    {
+        var samples = Enumerable.Range(0, 10).Select(i => S(1_000_000 + i * 1000L, null, 600, 700, "m", 8)).ToList();
+        samples.AddRange(Enumerable.Range(0, 10).Select(i => S(1_000_000 + 40 * 60_000L + i * 1000L, null, 300, 700, "m", 8)));
+        Assert.Equal(2, HeightTimeline.SplitRuns(samples).Count);
+    }
 }

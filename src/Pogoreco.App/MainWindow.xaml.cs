@@ -19,7 +19,6 @@ public partial class MainWindow : Window
         ("ラン", n => RunsPage.Build(n)),
         ("セッション", n => SessionsPage.Build(n)),
         ("マップ", n => MapsPage.Build(n)),
-        ("使い方", n => HelpPage.Build(n)),
     ];
     private readonly Navigator _nav;
     private string? _message;
@@ -45,6 +44,7 @@ public partial class MainWindow : Window
         var refresh = Ui.IconButton("M19,12 A7,7 0 1 1 16.9,7.1 M17,3.5 L17,7.5 L13,7.5", "更新", () => _ = RefreshAsync(), out _refreshSpin);
         refresh.Margin = new Thickness(0);
         SideActions.Children.Add(refresh);
+        SideActions.Children.Add(Ui.IconButton("M9,9 A3,3 0 1 1 13,12 Q12,12.6 12,14 M12,18 L12,18.1", "使い方（案内をもう一度見る）", StartTour, out _));
         // ショートカットは普通は一度しか作らないので、まだ無いときだけ出す
         _shortcutLink = Ui.Link("ショートカットを作成", CreateShortcut);
         _shortcutLink.VerticalAlignment = VerticalAlignment.Center;
@@ -61,6 +61,7 @@ public partial class MainWindow : Window
         {
             Reload();
             _nav.Go(_menu[0].Title, _menu[0].Build);
+            Tour.StartIfFirstTime(Root, _data, GoPage);
             _ = CheckUpdateAsync();
         };
         _timer.Tick += (_, _) =>
@@ -162,6 +163,15 @@ public partial class MainWindow : Window
             StatusArea.Children.Add(Ui.Notice("Pogostuck のインストール先が見つかりませんでした。Steam で Pogostuck をインストールしてください。", warn: true));
         if (_data.GameRunning && !_data.RecorderRunning)
             StatusArea.Children.Add(Ui.Notice("いまのプレイは画面の高さを記録できていません。次からはデスクトップの「Pogostuck（記録つき）」か、上のボタンから起動してください。", warn: true));
+    }
+
+    private void StartTour() => Tour.Start(Root, _data, GoPage);
+
+    /// <summary>案内から、うしろの画面を指定のメニューのページに切り替える。</summary>
+    private void GoPage(string title)
+    {
+        var item = _menu.First(m => m.Title == title);
+        _nav.Go(item.Title, item.Build);
     }
 
     private void StartRecording()
